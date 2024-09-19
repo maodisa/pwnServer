@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect
 import yaml
 
 # Pfad zur Konfigurationsdatei
-config_path = "/home/kali/pwnServer/config.yaml"
+config_path = "./config.yaml"
 
 # Funktion zum Laden der Konfiguration
 def load_config():
@@ -18,7 +18,7 @@ app = Flask(__name__)
 config = load_config()
 
 # Verzeichnis, in dem die Payloads gespeichert sind
-payload_dir = "/home/kali/pwnServer/payloads"
+payload_dir = "./payloads"
 
 # Funktion zur Ausführung der Duckyscript-Payload
 def run_duckyscript(file_path):
@@ -26,7 +26,7 @@ def run_duckyscript(file_path):
         payload = file.read()
     with open("/tmp/payload.txt", "w") as tmp_file:
         tmp_file.write(payload)
-    subprocess.run(["bash", "/home/kali/pwnServer/run_payload.sh"])
+    subprocess.run(["bash", "./run_payload.sh"])
 
 # Route für die Hauptseite des Webinterfaces
 @app.route('/')
@@ -34,7 +34,7 @@ def index():
     # Liste der gespeicherten Payloads laden
     payload_files = os.listdir(payload_dir)
     payloads = [f for f in payload_files if f.endswith('.txt')]
-    return render_template('index.html', payloads=payloads)
+    return render_template('templates/index.html', payloads=payloads)
 
 # Route für das Ausführen von Payloads
 @app.route('/execute', methods=['POST'])
