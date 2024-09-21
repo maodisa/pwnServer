@@ -1,20 +1,19 @@
 # PwnServer Guide
 
 ## Overview
-Dies ist ein Raspberry Pi Zero 2 W Projekt, das den Pi in einen BadUSB verwandelt und ein Webinterface bereitstellt, um Ducky Script Payloads über ein erstelltes WLAN-Netzwerk auszuführen.
-
 Das PwnServer-Projekt verwandelt einen Raspberry Pi Zero 2 W in einen BadUSB, der als USB-Tastatur erkannt wird und gleichzeitig ein Webinterface bietet, um Ducky Script Payloads über ein erstelltes WLAN-Netzwerk auszuführen.
 
 Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, suchen und direkt über das Webinterface auf dem verbundenen Zielgerät ausführen.
 
-
-
+---
 
 ## Funktionen
 - Startet ein WLAN-Netzwerk (Hotspot)
 - Webinterface für die Steuerung von Ducky Script Payloads
 - Ausführen und Speichern von Payloads
 - USB-HID Unterstützung (als Tastatur erkannt)
+
+---
 
 ## Projektstruktur
 - `pwn_server.py`: Hauptserver, der das Webinterface bereitstellt und Payloads injiziert.
@@ -23,8 +22,9 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 - `templates/index.html`: Webinterface für die Steuerung des PwnServers.
 - `payloads/`: Verzeichnis für gespeicherte Ducky Script Payloads.
 
-## Requirements
+---
 
+## Requirements
 1. **Hardware**
    - Raspberry Pi Zero 2 W
    - USB-Verbindung zu einem Rechner, um den Pi als BadUSB zu betreiben
@@ -52,16 +52,38 @@ wget https://cdn.pisugar.com/release/pisugar-power-manager.sh
 bash pisugar-power-manager.sh -c release
 nano /etc/pisugar-server/config.json
 ```
+
 change the text
+
 ```text
 "auto_power_on": true,
 ```
+
 or use the webinterface
+
 ```bash
 reboot
 ```
 
-## Installationsschritte
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Installation steps
 
 ### 1. Projekt klonen
 
@@ -84,6 +106,7 @@ pip3 install -r requirements.txt
 DuckPi wird verwendet, um Ducky Script in Tastatureingaben umzuwandeln. Klone und installiere DuckPi:
 
 ```bash
+cd /opt/
 git clone https://github.com/JohnSmithTech/duckpi.git
 cd duckpi
 sudo python3 setup.py install

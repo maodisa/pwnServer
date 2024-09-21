@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Levi Kuhlmann">
+    <meta name="description" content="AdaptAssess - Made with love and Mate in Cologne <3">
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/bootstrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/own/main.css') }}">
+
+    <title>{% block title %}AdaptAssess{% endblock %}</title>
+
+    {% block head %}{% endblock %}
+</head>
+
+
+<body>
+<header class="mb-4">
+    {% include 'partials/navBar.html' %}
+    {% block header %}{% endblock %}
+</header>
+
+<main>
+    <div class="container">
+        {% include 'partials/messages.html' %}
+        {% include 'partials/sideBar.html' %}
+        {% block main %}{% endblock %}
+    </div>
+</main>
+
+<footer class="footer mt-auto py-3 fixed-bottom">
+    {% include 'Partials/footer.html' %}
+    {% block footer %}{% endblock %}
+</footer>
+</body>
+
+
+<script src="{{ url_for('static', filename='/js/bootstrap.js') }}"></script>
+{% block scripts %}{% endblock %}
+</html>
