@@ -1,7 +1,14 @@
 # PwnServer Guide
 
-## Übersicht
+## Overview
 Dies ist ein Raspberry Pi Zero 2 W Projekt, das den Pi in einen BadUSB verwandelt und ein Webinterface bereitstellt, um Ducky Script Payloads über ein erstelltes WLAN-Netzwerk auszuführen.
+
+Das PwnServer-Projekt verwandelt einen Raspberry Pi Zero 2 W in einen BadUSB, der als USB-Tastatur erkannt wird und gleichzeitig ein Webinterface bietet, um Ducky Script Payloads über ein erstelltes WLAN-Netzwerk auszuführen.
+
+Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, suchen und direkt über das Webinterface auf dem verbundenen Zielgerät ausführen.
+
+
+
 
 ## Funktionen
 - Startet ein WLAN-Netzwerk (Hotspot)
@@ -16,48 +23,7 @@ Dies ist ein Raspberry Pi Zero 2 W Projekt, das den Pi in einen BadUSB verwandel
 - `templates/index.html`: Webinterface für die Steuerung des PwnServers.
 - `payloads/`: Verzeichnis für gespeicherte Ducky Script Payloads.
 
-## Installation
-
-### Voraussetzungen
-- Raspberry Pi Zero 2 W mit Kali Linux
-- Python 3 und Flask installiert
-
-### battery - pisugar2 - OPTIONAL!
-```bash
-sudo su
-raspi-config # --> i2f aktivieren
-
-exit
-
-wget https://cdn.pisugar.com/release/pisugar-power-manager.sh
-bash pisugar-power-manager.sh -c release
-nano /etc/pisugar-server/config.json
-```
-change the text
-```text
-"auto_power_on": true,
-```
-
-or use the webinterface
-
-```bash
-reboot
-```
-
-
-### Steps
-1. Projekt clonen:
-```bash
-git clone https://github.com/maodisa/pwnServer.git
-cd pwnServer
-```
-
-## Projektübersicht
-Das PwnServer-Projekt verwandelt einen Raspberry Pi Zero 2 W in einen BadUSB, der als USB-Tastatur erkannt wird und gleichzeitig ein Webinterface bietet, um Ducky Script Payloads über ein erstelltes WLAN-Netzwerk auszuführen.
-
-Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, suchen und direkt über das Webinterface auf dem verbundenen Zielgerät ausführen.
-
-## Voraussetzungen
+## Requirements
 
 1. **Hardware**
    - Raspberry Pi Zero 2 W
@@ -75,6 +41,26 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 
 ---
 
+### battery - pisugar2 - OPTIONAL!
+```bash
+sudo su
+raspi-config # --> i2f aktivieren
+
+exit
+
+wget https://cdn.pisugar.com/release/pisugar-power-manager.sh
+bash pisugar-power-manager.sh -c release
+nano /etc/pisugar-server/config.json
+```
+change the text
+```text
+"auto_power_on": true,
+```
+or use the webinterface
+```bash
+reboot
+```
+
 ## Installationsschritte
 
 ### 1. Projekt klonen
@@ -82,7 +68,7 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 Zuerst musst du das Projekt auf den Raspberry Pi klonen:
 
 ```bash
-git clone https://github.com/dein_repo/pwnServer.git
+git clone https://github.com/maodisa/pwnServer.git
 cd pwnServer
 ```
 ### 2. Abhängigkeiten installieren
