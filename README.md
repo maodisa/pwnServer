@@ -18,7 +18,11 @@ Dies ist ein Raspberry Pi Zero 2 W Projekt, das den Pi in einen BadUSB verwandel
 
 ## Installation
 
-### battery - pisugar2
+### Voraussetzungen
+- Raspberry Pi Zero 2 W mit Kali Linux
+- Python 3 und Flask installiert
+
+### battery - pisugar2 - OPTIONAL!
 ```bash
 sudo su
 raspi-config # --> i2f aktivieren
@@ -40,32 +44,12 @@ or use the webinterface
 reboot
 ```
 
-### Voraussetzungen
-- Raspberry Pi Zero 2 W mit Kali Linux
-- Python 3 und Flask installiert
 
-### Schritte
+### Steps
 1. Projekt clonen:
 ```bash
-git clone https://github.com/dein_repo/pwnServer.git
+git clone https://github.com/maodisa/pwnServer.git
 cd pwnServer
-```
-```bash
-sudo su
-raspi-config # --> i2f aktivieren
-
-exit
-
-wget https://cdn.pisugar.com/release/pisugar-power-manager.sh
-bash pisugar-power-manager.sh -c release
-nano /etc/pisugar-server/config.json
-```
-
-```text
-"auto_power_on": true,
-```
-```bash
-reboot
 ```
 
 ## Projektübersicht
