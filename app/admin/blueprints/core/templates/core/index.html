@@ -3,6 +3,7 @@
 
 {% block scripts %}
     <script src="{{ url_for('static', filename='/js/own/search_payloads.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/own/confirm_delete.js') }}"></script>
 {% endblock %}
 
 {% block main %}
@@ -32,19 +33,11 @@
     <h1>Welcome to PwnServer</h1>
 
     <!-- Eingabeform für Ducky Script Payload -->
-    <h2>Execute a Ducky Script Payload</h2>
-    <form action="/execute" method="post">
-        <label for="payload">Enter Ducky Script Payload:</label><br>
-        <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload"></textarea><br>
-        <input type="submit" value="Execute Payload">
-    </form>
-
-    <!-- Upload eines neuen Payloads -->
-    <h2>Upload a New Payload</h2>
-    <form action="/upload" method="post">
-        <input type="text" name="name" placeholder="Payload Name" required><br>
-        <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload"></textarea><br>
-        <input type="submit" value="Save Payload">
+    <h2>{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
+    <form action="{% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}" method="post">
+        <input type="text" name="name" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}" placeholder="Payload Name" required><br>
+        <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload">{% if edit_mode %}{{ edit_payload }}{% else %}{% endif %}</textarea><br>
+        <input type="submit" value="{% if edit_mode %}Save Changes{% else %}Save Payload{% endif %}">
     </form>
 
     <!-- Suche und Anzeige gespeicherter Payloads -->
@@ -67,6 +60,12 @@
                 <td>
                     <form action="/execute_saved/{{ payload }}" method="post" style="display:inline;">
                         <input type="submit" value="Execute">
+                    </form>
+                    <form action="/edit/{{ payload }}" method="get" style="display:inline;">
+                        <input type="submit" value="Edit">
+                    </form>
+                    <form action="/delete/{{ payload }}" method="post" style="display:inline;" onsubmit="return confirmDelete('{{ payload }}')">
+                        <input type="submit" value="Delete">
                     </form>
                 </td>
             </tr>
