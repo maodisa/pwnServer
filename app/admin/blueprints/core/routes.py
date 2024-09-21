@@ -4,7 +4,7 @@ from flask import render_template, Blueprint, request, redirect, url_for
 
 core = Blueprint('core', __name__, template_folder='templates')
 
-payload_dir = "D:\\projects\\pwnServer\\app\\admin\\static\\payloads\\duckyScript"
+payload_dir = "app/admin/static/payloads/duckyScript"
 
 # Funktion zur Ausführung der Duckyscript-Payload
 def run_duckyscript(file_path):
