@@ -41,6 +41,7 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 
 ---
 
+## Installation steps
 ### battery - pisugar2 - OPTIONAL!
 ```bash
 sudo su
@@ -62,9 +63,38 @@ change the text
 or use the webinterface
 
 ```bash
-reboot
+sudo reboot
 ```
 
+#### Commands of controlling pisugar-server systemd service
+```bash
+# reload daemon
+sudo systemctl daemon-reload
+
+# check status
+sudo systemctl status pisugar-server
+
+# start service
+sudo systemctl start pisugar-server
+
+# stop service
+sudo systemctl stop pisugar-server
+
+# disable service
+sudo systemctl disable pisugar-server
+
+# enable service
+sudo systemctl enable pisugar-server
+```
+
+
+---
+
+### remove xfce to reduce cpu usage: 
+
+```bash
+sudo apt purge xfce4* lightdm*
+```
 ---
 
 
@@ -80,10 +110,133 @@ reboot
 
 
 
+### Pi as HID-Device (Keyboard)
+https://randomnerdtutorials.com/raspberry-pi-zero-usb-keyboard-hid/
+```bash
+sudo apt update
+sudo apt dist-upgrade
+
+
+echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+echo "dwc2" | sudo tee -a /etc/modules
+sudo echo "libcomposite" | sudo tee -a /etc/modules
+
+# Creating the config script
+sudo touch /usr/bin/pwnPal_usb
+pi@raspberrypi:~ $ sudo chmod +x /usr/bin/pwnPal_usb # {DeviceName}
+```
+1. Run the crontab -e command
+2. Add the job to the @reboot.
+3. Add the following line to the ent of the file:
+4. @reboot /usr/bin/pwnPal_usb # libcomposite configuration
+5. Save and close the file. 
+
+Now job will run at the Linux boot time.
+```bash
+sudo nano /usr/bin/pwnPal_usb
+```
+Add the following:
+```bash
+#!/bin/bash
+cd /sys/kernel/config/usb_gadget/
+mkdir -p pwnPal
+cd pwnPal
+echo 0x1d6b > idVendor # Linux Foundation
+echo 0x0104 > idProduct # Multifunction Composite Gadget
+echo 0x0100 > bcdDevice # v1.0.0
+echo 0x0200 > bcdUSB # USB2
+mkdir -p strings/0x409 # USB-Version (v2.0)
+echo "fedcba0123456789" > strings/0x409/serialnumber # Locale-Code for US-Englisch
+echo "Pwn Community" > strings/0x409/manufacturer
+echo "Good USB Device" > strings/0x409/product
+mkdir -p configs/c.1/strings/0x409
+echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
+echo 250 > configs/c.1/MaxPower
+
+# Add functions here
+mkdir -p functions/hid.usb0
+echo 1 > functions/hid.usb0/protocol
+echo 1 > functions/hid.usb0/subclass
+echo 8 > functions/hid.usb0/report_length
+echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/hid.usb0/report_desc
+ln -s functions/hid.usb0 configs/c.1/
+# End functions
+
+ls /sys/class/udc > UDC
+```
+
+Establish an SSH connection with your Pi and use the next command to create a new Python script:
+
+```bash
+nano example.py
+```
+
+```python
+#!/usr/bin/env python3
+NULL_CHAR = chr(0)
+
+def write_report(report):
+    with open('/dev/hidg0', 'rb+') as fd:
+        fd.write(report.encode())
+
+def execute_duckyscript(file_path):
+    with open(file_path, 'r') as f:
+        for line in f:
+            command = line.strip()
+            if command.startswith("DELAY"):
+                delay_time = int(command.split()[1])
+                time.sleep(delay_time / 1000.0)  # DELAY in ms
+            elif command.startswith("PRINT"):
+                text = command.split(' ', 1)[1]
+                for char in text:
+                    write_character(char)
+            # Weitere Duckyscript-Befehle können hier hinzugefügt werden
+
+def write_character(char):
+    # Hier können die Charaktere für die Eingabe hinzugefügt werden
+    if char.isalpha():
+        key_code = ord(char.lower()) - ord('a') + 4  # a=4, b=5, ..., z=30
+        write_report(NULL_CHAR*2 + chr(key_code) + NULL_CHAR*5)
+        write_report(NULL_CHAR*8)  # Release key
+    elif char == ' ':
+        write_report(NULL_CHAR*2 + chr(44) + NULL_CHAR*5)  # SPACE
+        write_report(NULL_CHAR*8)  # Release key
+    # Weitere Zeichen können hier behandelt werden
+
+if __name__ == "__main__":
+    import time
+    execute_duckyscript("duckyscript.txt")
+```
+# wie verschiedene keyboards hinzufügen und alles dynamischer halten?
+Erstelle "duckyscript.txt":
+```yaml
+DELAY 1000
+PRINT Hello
+DELAY 500
+PRINT World
+
+```
+
+
+execute Code via:
+
+```bash
+sudo python3 example.py
+```
+
+
+![img.png](img.png)
 
 
 
-## Installation steps
+
+
+
+
+
+
+
+
 
 ### 1. Projekt klonen
 
