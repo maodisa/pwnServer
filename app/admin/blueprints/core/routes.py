@@ -9,9 +9,9 @@ payload_dir = "app/admin/static/payloads/duckyScript"
 
 
 # Funktion zur Ausführung der Duckyscript-Payload
-def run_duckyscript(file_path):
+def run_duckyscript(file_path, layout):
     # Die execute_payload Funktion aus ducky.py aufrufen
-    execute_payload(file_path)
+    execute_payload(file_path, layout)
 
 
 @core.route('/')
@@ -20,23 +20,6 @@ def index():
     payload_files = os.listdir(payload_dir)
     payloads = [f for f in payload_files if f.endswith('.txt')]
     return render_template('core/index.html', payloads=payloads)
-
-
-# Route für das Ausführen von Payloads
-@core.route('/execute', methods=['POST'])
-def execute_payload_route():
-    payload = request.form['payload']
-    file_path = os.path.join(payload_dir, payload)
-    run_duckyscript(file_path)
-    return redirect('/')
-
-
-@core.route('/execute_saved/<filename>', methods=['POST'])
-def execute_saved_payload(filename):
-    layout = request.form.get('keyboard_layout', 'US')  # Default to US layout
-    payload_path = os.path.join("app/admin/static/payloads/duckyScript", filename)
-    execute_payload(payload_path, layout)
-    return redirect(url_for('core.index'))
 
 
 # Route zum Hochladen und Speichern von Payloads
@@ -86,4 +69,23 @@ def delete_payload(filename):
     if os.path.exists(file_path):
         os.remove(file_path)  # Löscht die Datei
 
+    return redirect('/')
+
+
+# Neue Route zum Ausführen des ausgewählten Payloads
+@core.route('/execute_selected', methods=['POST'])
+def execute_selected_payload():
+    # Payload aus dem Formular und das ausgewählte Layout abfragen
+    payload_content = request.form['payload']
+    layout = request.form.get('keyboard_layout', 'US')  # Standardmäßig auf US setzen
+
+    # Temporär gespeichertes Payload ausführen
+    temp_payload_path = os.path.join(payload_dir, "temp_execution_payload.txt")
+    with open(temp_payload_path, "w") as temp_file:
+        temp_file.write(payload_content)
+
+    # Ausführen des temporären Payloads
+    run_duckyscript(temp_payload_path, layout)
+
+    # Zurück zur Hauptseite
     return redirect('/')

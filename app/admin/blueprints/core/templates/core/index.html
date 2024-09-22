@@ -6,38 +6,34 @@
     <script src="{{ url_for('static', filename='/js/own/confirm_delete.js') }}"></script>
 {% endblock %}
 
+{% block head %}
+    <title>PwnServer Interface</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+{% endblock %}
+
 {% block main %}
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PwnServer Interface</title>
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            table, th, td {
-                border: 1px solid black;
-            }
-
-            th, td {
-                padding: 10px;
-                text-align: left;
-            }
-        </style>
-    </head>
-    <body>
     <h1>Welcome to PwnServer</h1>
 
     <!-- Eingabeform für Ducky Script Payload -->
     <h2>{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
-    <form action="
 
-            {% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}"
-          method="post">
+    <!-- Updated Form with Execute Button -->
+    <form action="{% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}"
+          method="post" id="payload-form">
         <input type="text" name="name" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}"
                placeholder="Payload Name" required><br>
         <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload">{% if edit_mode %}
@@ -52,6 +48,9 @@
         </select><br>
 
         <input type="submit" value="{% if edit_mode %}Save Changes{% else %}Save Payload{% endif %}">
+
+        <!-- Execute Button neben Save -->
+        <input type="submit" formaction="/execute_selected" formmethod="post" value="Execute">
     </form>
 
     <!-- Suche und Anzeige gespeicherter Payloads -->
@@ -72,11 +71,9 @@
             <tr>
                 <td>{{ payload }}</td>
                 <td>
-                    <form action="/execute_saved/{{ payload }}" method="post" style="display:inline;">
-                        <input type="submit" value="Execute">
-                    </form>
+                    <!-- "Select"-Button anstelle von "Edit" -->
                     <form action="/edit/{{ payload }}" method="get" style="display:inline;">
-                        <input type="submit" value="Edit">
+                        <input type="submit" value="Select">
                     </form>
                     <form action="/delete/{{ payload }}" method="post" style="display:inline;"
                           onsubmit="return confirmDelete('{{ payload }}')">
