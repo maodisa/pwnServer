@@ -34,9 +34,23 @@
 
     <!-- Eingabeform für Ducky Script Payload -->
     <h2>{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
-    <form action="{% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}" method="post">
-        <input type="text" name="name" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}" placeholder="Payload Name" required><br>
-        <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload">{% if edit_mode %}{{ edit_payload }}{% else %}{% endif %}</textarea><br>
+    <form action="
+
+            {% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}"
+          method="post">
+        <input type="text" name="name" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}"
+               placeholder="Payload Name" required><br>
+        <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload">{% if edit_mode %}
+            {{ edit_payload }}{% else %}{% endif %}</textarea><br>
+
+        <!-- Dropdown für das Tastaturlayout -->
+        <label for="keyboard_layout">Select Keyboard Layout:</label>
+        <select name="keyboard_layout" id="keyboard_layout">
+            <option value="US">US</option>
+            <option value="DE">DE</option>
+            <!-- Add more options as needed -->
+        </select><br>
+
         <input type="submit" value="{% if edit_mode %}Save Changes{% else %}Save Payload{% endif %}">
     </form>
 
@@ -64,7 +78,8 @@
                     <form action="/edit/{{ payload }}" method="get" style="display:inline;">
                         <input type="submit" value="Edit">
                     </form>
-                    <form action="/delete/{{ payload }}" method="post" style="display:inline;" onsubmit="return confirmDelete('{{ payload }}')">
+                    <form action="/delete/{{ payload }}" method="post" style="display:inline;"
+                          onsubmit="return confirmDelete('{{ payload }}')">
                         <input type="submit" value="Delete">
                     </form>
                 </td>
