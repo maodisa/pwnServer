@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Bad-USB{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='/js/own/search_payloads.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/own/confirm_delete.js') }}"></script>
+{% endblock %}
+
+{% block head %}
+    <title>PwnServer Interface</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <h1>Welcome to PwnServer</h1>
+
+    <!-- Eingabeform für Ducky Script Payload -->
+    <h2>{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
+
+    <!-- Updated Form with Execute Button -->
+    <form action="{% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}"
+          method="post" id="payload-form">
+        <input type="text" name="name" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}"
+               placeholder="Payload Name" required><br>
+        <textarea name="payload" rows="10" cols="50" placeholder="Enter Ducky Script Payload">{% if edit_mode %}
+            {{ edit_payload }}{% else %}{% endif %}</textarea><br>
+
+        <!-- Dropdown für das Tastaturlayout -->
+        <label for="keyboard_layout">Select Keyboard Layout:</label>
+        <select name="keyboard_layout" id="keyboard_layout">
+            <option value="US">US</option>
+            <option value="DE">DE</option>
+            <!-- Add more options as needed -->
+        </select><br>
+
+        <input type="submit" value="{% if edit_mode %}Save Changes{% else %}Save Payload{% endif %}">
+
+        <!-- Execute Button neben Save -->
+        <input type="submit" formaction="/execute_selected" formmethod="post" value="Execute">
+    </form>
+
+    <!-- Suche und Anzeige gespeicherter Payloads -->
+    <h2>Saved Payloads</h2>
+    <input type="text" id="searchInput" onkeyup="searchPayload()" placeholder="Search for payloads...">
+    <br><br>
+
+    <table id="payloadTable">
+        <thead>
+        <tr>
+            <th>Payload Name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Liste gespeicherter Payloads -->
+        {% for payload in payloads %}
+            <tr>
+                <td>{{ payload }}</td>
+                <td>
+                    <!-- "Select"-Button anstelle von "Edit" -->
+                    <form action="/edit/{{ payload }}" method="get" style="display:inline;">
+                        <input type="submit" value="Select">
+                    </form>
+                    <form action="/delete/{{ payload }}" method="post" style="display:inline;"
+                          onsubmit="return confirmDelete('{{ payload }}')">
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

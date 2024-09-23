@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Terminal{% endblock %}
+
+{% block main %}
+    <h2>Terminal</h2>
+    <div id="terminal_output" style="background-color: #000; color: #fff; padding: 10px; height: 300px; overflow-y: scroll;"></div>
+    <br>
+    <form id="terminal_form" onsubmit="sendCommand(); return false;">
+        <input type="text" id="terminal_command" placeholder="Enter command" style="width: 80%;" required>
+        <button type="submit">Send</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    // Funktion zum Senden des Terminal-Befehls
+    function sendCommand() {
+        var command = document.getElementById('terminal_command').value;
+        socket.emit('terminal_command', command);
+        document.getElementById('terminal_command').value = '';
+    }
+
+    // Empfängt die Terminal-Ausgabe vom Server
+    socket.on('terminal_output', function(data) {
+        var terminalOutput = document.getElementById('terminal_output');
+        terminalOutput.innerHTML += data + '<br>';
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;  // Scroll automatisch nach unten
+    });
+</script>
+{% endblock %}
