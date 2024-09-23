@@ -1,4 +1,4 @@
-from app.admin import create_admin_app, socketio
+from app.admin import create_admin_app, socket_io
 import yaml
 
 # import os  # Eventuell nützlich, falls du später systemnahe Befehle ausführen möchtest
@@ -20,4 +20,4 @@ if __name__ == '__main__':
     # os.system(f"nmcli dev wifi hotspot ifname wlan0 ssid {config['SSID']} password {config['Password']}")
 
     # Verwende socketio.run, um die App mit WebSocket-Unterstützung zu starten
-    socketio.run(admin_app, host='0.0.0.0', port=3001, debug=True)
+    socket_io.run(admin_app, host='0.0.0.0', port=3001, debug=True)

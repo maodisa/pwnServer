@@ -2,7 +2,7 @@ from flask import Flask
 from flask_socketio import SocketIO
 
 # SocketIO-Instanz erstellen
-socketio = SocketIO()
+socket_io = SocketIO()
 
 
 def create_admin_app():
@@ -21,6 +21,6 @@ def create_admin_app():
         app.register_blueprint(terminal, url_prefix='/terminal')
 
         # Initialisiere Flask-SocketIO mit der App
-        socketio.init_app(app)
+        socket_io.init_app(app)
 
     return app

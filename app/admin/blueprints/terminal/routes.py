@@ -1,6 +1,7 @@
 import socketio
 from flask_socketio import emit
 import subprocess  # To run system commands
+from app.admin import socket_io  # Das umbenannte SocketIO-Objekt importieren
 from flask import render_template, Blueprint
 
 terminal = Blueprint('terminal', __name__, template_folder='templates')
