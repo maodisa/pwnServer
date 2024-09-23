@@ -16,3 +16,35 @@ socket.on('command_output', function (msg) {
     terminal.innerHTML += '<p>' + msg.data + '</p>';
     terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to the bottom
 });
+
+// Funktion zum Senden eines Befehls
+function sendCommand() {
+    var command = document.getElementById('command-input').value;
+    if (command.trim() !== '') {
+        socket.emit('run_command', {data: command});
+        document.getElementById('command-input').value = ''; // Eingabe löschen
+    }
+}
+
+// Eingabefeld auf Enter-Taste reagieren lassen
+document.getElementById('command-input').addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+        sendCommand();
+        event.preventDefault(); // Verhindert das Standardverhalten (z.B. Formularübermittlung)
+    }
+});
+
+// Funktion zum Senden von Ctrl+C
+document.addEventListener('keydown', function (event) {
+    if (event.ctrlKey && event.key === 'c') {
+        socket.emit('run_command', {data: 'Ctrl+C'});
+        event.preventDefault(); // Verhindert das Standardverhalten
+    }
+});
+
+// Auf die Terminalausgabe vom Server hören
+socket.on('command_output', function (msg) {
+    var terminal = document.getElementById('terminal-output');
+    terminal.innerHTML += '<p>' + msg.data + '</p>';
+    terminal.scrollTop = terminal.scrollHeight; // Automatisches Scrollen nach unten
+});
