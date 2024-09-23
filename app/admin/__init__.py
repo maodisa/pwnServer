@@ -1,12 +1,14 @@
-from flask import (Flask)
+from flask import Flask
+from flask_socketio import SocketIO
 
+# SocketIO-Instanz erstellen
+socketio = SocketIO()
 
 
 def create_admin_app():
     app = Flask(__name__, template_folder='templates')
 
-    # TODO: Herausfinden was das ist und ÄNDERN!!!
-    app.secret_key = 'SOME KEY'
+    app.secret_key = 'SOME KEY _ CHANGEME!!!!'
 
 
     with app.app_context():
@@ -17,5 +19,8 @@ def create_admin_app():
         app.register_blueprint(core, url_prefix='/')
         app.register_blueprint(badUSB, url_prefix='/badUSB')
         app.register_blueprint(terminal, url_prefix='/terminal')
+
+        # Initialisiere Flask-SocketIO mit der App
+        socketio.init_app(app)
 
     return app

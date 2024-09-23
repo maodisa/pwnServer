@@ -1,33 +1,30 @@
-{% extends "base.html" %}
-{% block title %}Terminal{% endblock %}
+<!-- Terminal Output Section -->
+<h2>Terminal</h2>
+<div id="terminal-output" style="background-color: black; color: white; height: 300px; overflow-y: scroll; padding: 10px;">
+    <!-- Terminal output will be displayed here -->
+</div>
 
-{% block main %}
-    <h2>Terminal</h2>
-    <div id="terminal_output" style="background-color: #000; color: #fff; padding: 10px; height: 300px; overflow-y: scroll;"></div>
-    <br>
-    <form id="terminal_form" onsubmit="sendCommand(); return false;">
-        <input type="text" id="terminal_command" placeholder="Enter command" style="width: 80%;" required>
-        <button type="submit">Send</button>
-    </form>
-{% endblock %}
+<!-- Input for sending commands -->
+<input type="text" id="command-input" placeholder="Enter command" style="width: 80%;" />
+<button onclick="sendCommand()">Send</button>
 
-{% block scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
-<script type="text/javascript">
+<!-- Add a script to handle WebSocket communication -->
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+    // Connect to the WebSocket server
     var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-    // Funktion zum Senden des Terminal-Befehls
+    // Function to send a command
     function sendCommand() {
-        var command = document.getElementById('terminal_command').value;
-        socket.emit('terminal_command', command);
-        document.getElementById('terminal_command').value = '';
+        var command = document.getElementById('command-input').value;
+        socket.emit('run_command', { data: command });
+        document.getElementById('command-input').value = ''; // Clear the input
     }
 
-    // Empfängt die Terminal-Ausgabe vom Server
-    socket.on('terminal_output', function(data) {
-        var terminalOutput = document.getElementById('terminal_output');
-        terminalOutput.innerHTML += data + '<br>';
-        terminalOutput.scrollTop = terminalOutput.scrollHeight;  // Scroll automatisch nach unten
+    // Listen for terminal output from the server
+    socket.on('command_output', function(msg) {
+        var terminal = document.getElementById('terminal-output');
+        terminal.innerHTML += '<p>' + msg.data + '</p>';
+        terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to the bottom
     });
 </script>
-{% endblock %}
