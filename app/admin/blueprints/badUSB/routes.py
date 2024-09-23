@@ -1,5 +1,5 @@
 import os
-from flask import render_template, Blueprint, request, redirect, url_for
+from flask import render_template, Blueprint, request, redirect
 from app.admin.python.ducky_script.ducky import execute_payload
 
 badUSB = Blueprint('badUSB', __name__, template_folder='templates')

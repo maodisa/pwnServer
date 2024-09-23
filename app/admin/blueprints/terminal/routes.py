@@ -1,7 +1,7 @@
 import socketio
 from flask_socketio import emit
 import subprocess  # To run system commands
-from flask import render_template, Blueprint, emit
+from flask import render_template, Blueprint
 
 terminal = Blueprint('terminal', __name__, template_folder='templates')
 
