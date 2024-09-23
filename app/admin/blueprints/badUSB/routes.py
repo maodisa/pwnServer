@@ -23,17 +23,17 @@ def index():
 
 
 # Route zum Hochladen und Speichern von Payloads
-@badUSB.route('badUSB/upload', methods=['POST'])
+@badUSB.route('/upload', methods=['POST'])
 def upload_payload():
     payload = request.form['payload'].strip()  # Entfernt führende und nachfolgende Leerzeichen/Tabs
     filename = request.form['name'] + ".txt"
     with open(os.path.join(payload_dir, filename), "w") as file:
         file.write(payload)
-    return redirect('/')
+    return redirect('badUSB/index.html')
 
 
 # Route zum Bearbeiten einer Payload
-@badUSB.route('badUSB/edit/<filename>', methods=['GET'])
+@badUSB.route('/edit/<filename>', methods=['GET'])
 def edit_payload(filename):
     file_path = os.path.join(payload_dir, filename)
     with open(file_path, "r") as file:
@@ -52,28 +52,28 @@ def edit_payload(filename):
 
 
 # Route zum Speichern der bearbeiteten Payload
-@badUSB.route('badUSB/update/<filename>', methods=['POST'])
+@badUSB.route('/update/<filename>', methods=['POST'])
 def update_payload(filename):
     payload = request.form['payload'].strip()  # Entfernt führende und nachfolgende Leerzeichen/Tabs
     file_path = os.path.join(payload_dir, filename)
     with open(file_path, "w") as file:
         file.write(payload)
-    return redirect('/')
+    return redirect('badUSB/index.html')
 
 
 # Route zum Löschen eines Payloads
-@badUSB.route('badUSB/delete/<filename>', methods=['POST'])
+@badUSB.route('/delete/<filename>', methods=['POST'])
 def delete_payload(filename):
     file_path = os.path.join(payload_dir, filename)
 
     if os.path.exists(file_path):
         os.remove(file_path)  # Löscht die Datei
 
-    return redirect('/')
+    return redirect('badUSB/index.html')
 
 
 # Neue Route zum Ausführen des ausgewählten Payloads
-@badUSB.route('badUSB/execute_selected', methods=['POST'])
+@badUSB.route('/execute_selected', methods=['POST'])
 def execute_selected_payload():
     # Payload aus dem Formular und das ausgewählte Layout abfragen
     payload_content = request.form['payload']
@@ -88,4 +88,4 @@ def execute_selected_payload():
     run_duckyscript(temp_payload_path, layout)
 
     # Zurück zur Hauptseite
-    return redirect('/')
+    return redirect('badUSB/index.html')
