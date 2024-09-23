@@ -17,14 +17,6 @@ socket.on('command_output', function (msg) {
     terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to the bottom
 });
 
-// // Eingabefeld auf Enter-Taste reagieren lassen
-// document.getElementById('command-input').addEventListener('keypress', function (event) {
-//     if (event.key === 'Enter') {
-//         sendCommand();
-//         event.preventDefault(); // Verhindert das Standardverhalten (z.B. Formularübermittlung)
-//     }
-// });
-
 // Auf die Terminalausgabe vom Server hören
 socket.on('command_output', function (msg) {
     var terminal = document.getElementById('terminal-output');
