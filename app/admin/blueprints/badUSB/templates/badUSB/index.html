@@ -7,7 +7,7 @@
 
     <!-- Script to hide flash messages after 5 seconds -->
     <script>
-        setTimeout(function() {
+        setTimeout(function () {
             let flashMessages = document.getElementById('flash-messages');
             if (flashMessages) {
                 flashMessages.style.display = 'none';
@@ -28,7 +28,8 @@
                         {% for category, message in messages %}
                             <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
                                 {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                             </div>
                         {% endfor %}
                     </div>
@@ -39,7 +40,9 @@
         <h2 class="mt-4">{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
 
         <!-- Eingabeform für Ducky Script Payload -->
-        <form action="{% if edit_mode %}{{ url_for('badUSB.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('badUSB.upload_payload') }}{% endif %}"
+        <form action="
+
+                {% if edit_mode %}{{ url_for('badUSB.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('badUSB.upload_payload') }}{% endif %}"
               method="post" id="payload-form" class="mb-4">
             <div class="form-group">
                 <input type="text" name="name" class="form-control"
@@ -60,13 +63,17 @@
                     <!-- Add more options as needed -->
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">{% if edit_mode %}Save Changes{% else %}Save Payload{% endif %}</button>
-            <button type="submit" formaction="{{url_for('badUSB.execute_selected_payload')}}" formmethod="post" class="btn btn-success">Execute</button>
+            <button type="submit" class="btn btn-primary">{% if edit_mode %}Save Changes{% else %}Save
+                Payload{% endif %}</button>
+            <button type="submit" formaction="{{ url_for('badUSB.execute_selected_payload') }}" formmethod="post"
+                    class="btn btn-success">Execute
+            </button>
         </form>
 
         <!-- Suche und Anzeige gespeicherter Payloads -->
         <h2>Saved Payloads</h2>
-        <input type="text" id="searchInput" onkeyup="searchPayload()" placeholder="Search for payloads..." class="form-control mb-3">
+        <input type="text" id="searchInput" onkeyup="searchPayload()" placeholder="Search for payloads..."
+               class="form-control mb-3">
 
         <table class="table table-bordered">
             <thead class="thead-light">
@@ -80,10 +87,12 @@
                 <tr>
                     <td>{{ payload }}</td>
                     <td>
-                        <form action="{{ url_for('badUSB.edit_payload', filename=payload) }}" method="get" style="display:inline;">
+                        <form action="{{ url_for('badUSB.edit_payload', filename=payload) }}" method="get"
+                              style="display:inline;">
                             <button type="submit" class="btn btn-warning btn-sm">Select</button>
                         </form>
-                        <form action="{{ url_for('badUSB.delete_payload', filename=payload) }}" method="post" style="display:inline;" onsubmit="return confirmDelete('{{ payload }}')">
+                        <form action="{{ url_for('badUSB.delete_payload', filename=payload) }}" method="post"
+                              style="display:inline;" onsubmit="return confirmDelete('{{ payload }}')">
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </td>
@@ -91,5 +100,23 @@
             {% endfor %}
             </tbody>
         </table>
+        <h2>Auto-Run Settings</h2>
+        <form action="{{ url_for('badUSB.update_auto_run') }}" method="post" class="mb-4">
+            <div class="form-group">
+                <label for="auto_run_enabled">Enable Auto-Run:</label>
+                <input type="checkbox" name="auto_run_enabled" id="auto_run_enabled"
+                       {% if auto_run_enabled %}checked{% endif %}>
+            </div>
+            <div class="form-group">
+                <label for="auto_run_payload">Select Payload for Auto-Run:</label>
+                <select name="auto_run_payload" id="auto_run_payload" class="form-control">
+                    {% for payload in payloads %}
+                        <option value="{{ payload }}"
+                                {% if payload == auto_run_payload %}selected{% endif %}>{{ payload }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Auto-Run Settings</button>
+        </form>
     </div>
 {% endblock %}

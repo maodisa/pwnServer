@@ -6,6 +6,7 @@ badUSB = Blueprint('badUSB', __name__, template_folder='templates')
 
 # Speicherort für die Payloads
 payload_dir = "app/admin/static/payloads/duckyScript"
+config_file_path = "app/admin/static/config/auto_run_config.txt"
 
 
 # Funktion zur Ausführung der Duckyscript-Payload
@@ -23,7 +24,14 @@ def index():
     # Liste der gespeicherten Payloads laden
     payload_files = os.listdir(payload_dir)
     payloads = [f for f in payload_files if f.endswith('.txt')]
-    return render_template('badUSB/index.html', payloads=payloads)
+
+    # Auto-Run-Konfiguration laden
+    auto_run_config = load_auto_run_config()
+
+    return render_template('badUSB/index.html',
+                           payloads=payloads,
+                           auto_run_enabled=auto_run_config['enabled'],
+                           auto_run_payload=auto_run_config['payload_name'])
 
 
 # Route zum Hochladen und Speichern von Payloads
@@ -117,4 +125,72 @@ def execute_selected_payload():
     except Exception as e:
         flash(f'Error executing payload: {str(e)}', 'danger')
 
+    return redirect(url_for('badUSB.index'))
+
+
+# Funktion zum Laden der Auto-Run-Konfiguration
+def load_auto_run_config():
+    config = {'enabled': False, 'payload_name': ''}
+    if os.path.exists(config_file_path):
+        with open(config_file_path, 'r') as file:
+            lines = file.readlines()
+            config['enabled'] = lines[0].split('=')[1].strip() == 'True'
+            config['payload_name'] = lines[1].split('=')[1].strip()
+    return config
+
+
+# Funktion zum Speichern der Auto-Run-Konfiguration
+def save_auto_run_config(enabled, payload_name):
+    with open(config_file_path, 'w') as file:
+        file.write(f"enabled={enabled}\n")
+        file.write(f"payload_name={payload_name}\n")
+
+
+@badUSB.route('/')
+def index():
+    # Liste der gespeicherten Payloads laden
+    payload_files = os.listdir(payload_dir)
+    payloads = [f for f in payload_files if f.endswith('.txt')]
+
+    # Auto-Run-Konfiguration laden
+    auto_run_config = load_auto_run_config()
+
+    return render_template('badUSB/index.html',
+                           payloads=payloads,
+                           auto_run_enabled=auto_run_config['enabled'],
+                           auto_run_payload=auto_run_config['payload_name'])
+
+
+# Route zum Aktualisieren der Auto-Run-Einstellungen
+@badUSB.route('/update_auto_run', methods=['POST'])
+def update_auto_run():
+    # Lesen der Formulardaten
+    auto_run_enabled = request.form.get('auto_run_enabled') == 'on'
+    auto_run_payload = request.form.get('auto_run_payload')
+
+    # Speichern der Konfiguration
+    save_auto_run_config(auto_run_enabled, auto_run_payload)
+
+    flash('Auto-Run settings updated!', 'success')
+    return redirect(url_for('badUSB.index'))
+
+
+# Funktion zum Ausführen des Auto-Run-Payloads beim Start
+def auto_run_if_enabled():
+    config = load_auto_run_config()
+    if config['enabled'] and config['payload_name']:
+        payload_path = os.path.join(payload_dir, config['payload_name'])
+        run_duckyscript(payload_path, layout='US')  # Hier kannst du das Standard-Layout anpassen
+
+
+@badUSB.route('/update_auto_run', methods=['POST'])
+def update_auto_run():
+    # Lesen der Formulardaten
+    auto_run_enabled = request.form.get('auto_run_enabled') == 'on'
+    auto_run_payload = request.form.get('auto_run_payload')
+
+    # Speichern der Konfiguration
+    save_auto_run_config(auto_run_enabled, auto_run_payload)
+
+    flash('Auto-Run settings updated!', 'success')
     return redirect(url_for('badUSB.index'))
