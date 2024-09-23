@@ -38,7 +38,7 @@
             </div>
             <button type="submit" class="btn btn-primary">{% if edit_mode %}Save Changes{% else %}Save
                 Payload{% endif %}</button>
-            <button type="submit" formaction="/execute_selected" formmethod="post" class="btn btn-success">Execute
+            <button type="submit" formaction="{{url_for('badUSB.execute_selected_payload')}}" formmethod="post" class="btn btn-success">Execute
             </button>
         </form>
 
