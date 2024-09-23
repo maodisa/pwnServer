@@ -32,7 +32,7 @@
     <h2>{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
 
     <!-- Updated Form with Execute Button -->
-    <form action="{% if edit_mode %}{{ url_for('core.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('core.upload_payload') }}{% endif %}"
+    <form action="{% if edit_mode %}{{ url_for('badUSB.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('badUSB.upload_payload') }}{% endif %}"
           method="post" id="payload-form">
         <input type="text" name="name" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}"
                placeholder="Payload Name" required><br>
