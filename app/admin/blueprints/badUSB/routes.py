@@ -146,21 +146,6 @@ def save_auto_run_config(enabled, payload_name):
         file.write(f"payload_name={payload_name}\n")
 
 
-@badUSB.route('/')
-def index():
-    # Liste der gespeicherten Payloads laden
-    payload_files = os.listdir(payload_dir)
-    payloads = [f for f in payload_files if f.endswith('.txt')]
-
-    # Auto-Run-Konfiguration laden
-    auto_run_config = load_auto_run_config()
-
-    return render_template('badUSB/index.html',
-                           payloads=payloads,
-                           auto_run_enabled=auto_run_config['enabled'],
-                           auto_run_payload=auto_run_config['payload_name'])
-
-
 # Route zum Aktualisieren der Auto-Run-Einstellungen
 @badUSB.route('/update_auto_run', methods=['POST'])
 def update_auto_run():
