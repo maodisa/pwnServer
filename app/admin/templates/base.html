@@ -11,6 +11,18 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/own/main.css') }}">
 
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+
     <title>{% block title %}AdaptAssess{% endblock %}</title>
 
     {% block head %}{% endblock %}

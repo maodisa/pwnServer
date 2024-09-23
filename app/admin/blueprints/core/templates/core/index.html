@@ -2,5 +2,12 @@
 {% block title %}pwnServer{% endblock %}
 
 {% block main %}
-    <h2>Hello World!</h2>
+<div class="container mt-5">
+    <h2 class="text-center">PWN the world!</h2>
+    <div class="list-group mt-4">
+        <a href="{{ url_for('core.index') }}" class="list-group-item list-group-item-action">🏠 Home</a>
+        <a href="{{ url_for('badUSB.index') }}" class="list-group-item list-group-item-action">🖥️ BadUSB</a>
+        <a href="{{ url_for('terminal.index') }}" class="list-group-item list-group-item-action">💻 Terminal</a>
+    </div>
+</div>
 {% endblock %}

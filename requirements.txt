@@ -1,3 +1,6 @@
-PyYAML~=6.0.2
 Flask~=3.0.3
-flask_socketio
+Flask-SocketIO~=5.3.4  # Version kompatibel mit Flask 3.x
+python-socketio~=5.7.2  # Abhängigkeit für Flask-SocketIO
+python-engineio~=4.3.4  # Abhängigkeit für Flask-SocketIO
+eventlet~=0.33.0  # Eventlet wird für asynchrone WebSocket-Kommunikation empfohlen
+PyYAML~=6.0.2
