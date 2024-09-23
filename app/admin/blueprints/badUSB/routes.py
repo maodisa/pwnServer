@@ -166,16 +166,3 @@ def auto_run_if_enabled():
     if config['enabled'] and config['payload_name']:
         payload_path = os.path.join(payload_dir, config['payload_name'])
         run_duckyscript(payload_path, layout='US')  # Hier kannst du das Standard-Layout anpassen
-
-
-@badUSB.route('/update_auto_run', methods=['POST'])
-def update_auto_run():
-    # Lesen der Formulardaten
-    auto_run_enabled = request.form.get('auto_run_enabled') == 'on'
-    auto_run_payload = request.form.get('auto_run_payload')
-
-    # Speichern der Konfiguration
-    save_auto_run_config(auto_run_enabled, auto_run_payload)
-
-    flash('Auto-Run settings updated!', 'success')
-    return redirect(url_for('badUSB.index'))
