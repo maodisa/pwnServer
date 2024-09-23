@@ -1,5 +1,5 @@
 import os
-from flask import render_template, Blueprint, request, redirect
+from flask import render_template, Blueprint, request, redirect, url_for
 from app.admin.python.ducky_script.ducky import execute_payload
 
 badUSB = Blueprint('badUSB', __name__, template_folder='templates')
@@ -29,7 +29,7 @@ def upload_payload():
     filename = request.form['name'] + ".txt"
     with open(os.path.join(payload_dir, filename), "w") as file:
         file.write(payload)
-    return redirect('badUSB/index.html')
+    return redirect(url_for('badUSB.index'))
 
 
 # Route zum Bearbeiten einer Payload
@@ -58,7 +58,7 @@ def update_payload(filename):
     file_path = os.path.join(payload_dir, filename)
     with open(file_path, "w") as file:
         file.write(payload)
-    return redirect('badUSB/index.html')
+    return redirect(url_for('badUSB.index'))
 
 
 # Route zum Löschen eines Payloads
@@ -69,7 +69,7 @@ def delete_payload(filename):
     if os.path.exists(file_path):
         os.remove(file_path)  # Löscht die Datei
 
-    return redirect('badUSB/index.html')
+    return redirect(url_for('badUSB.index'))
 
 
 # Neue Route zum Ausführen des ausgewählten Payloads
@@ -88,4 +88,4 @@ def execute_selected_payload():
     run_duckyscript(temp_payload_path, layout)
 
     # Zurück zur Hauptseite
-    return redirect('badUSB/index.html')
+    return redirect(url_for('badUSB.index'))
