@@ -17,18 +17,3 @@ socket.on('command_output', function (msg) {
     terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to the bottom
 });
 
-// Eingabefeld auf Enter-Taste reagieren lassen
-document.getElementById('command-input').addEventListener('keypress', function (event) {
-    if (event.key === 'Enter') {
-        sendCommand();
-        event.preventDefault(); // Verhindert das Standardverhalten (z.B. Formularübermittlung)
-    }
-});
-
-// Funktion zum Senden von Ctrl+C
-document.addEventListener('keydown', function (event) {
-    if (event.ctrlKey && event.key === 'c') {
-        socket.emit('run_command', {data: 'Ctrl+C'});
-        event.preventDefault(); // Verhindert das Standardverhalten
-    }
-});
