@@ -12,8 +12,10 @@ def create_admin_app():
     with app.app_context():
         from app.admin.blueprints.core.routes import core
         from app.admin.blueprints.badUSB.routes import badUSB
+        from app.admin.blueprints.terminal.routes import terminal
 
         app.register_blueprint(core, url_prefix='/')
         app.register_blueprint(badUSB, url_prefix='/badUSB')
+        app.register_blueprint(badUSB, url_prefix='/terminal')
 
     return app
