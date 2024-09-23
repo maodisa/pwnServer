@@ -17,15 +17,6 @@ socket.on('command_output', function (msg) {
     terminal.scrollTop = terminal.scrollHeight; // Auto-scroll to the bottom
 });
 
-// Funktion zum Senden eines Befehls
-function sendCommand() {
-    var command = document.getElementById('command-input').value;
-    if (command.trim() !== '') {
-        socket.emit('run_command', {data: command});
-        document.getElementById('command-input').value = ''; // Eingabe löschen
-    }
-}
-
 // Eingabefeld auf Enter-Taste reagieren lassen
 document.getElementById('command-input').addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
