@@ -6,76 +6,69 @@
     <script src="{{ url_for('static', filename='/js/own/confirm_delete.js') }}"></script>
 {% endblock %}
 
-{% block head %}
-    <title>PwnServer Interface</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-    </style>
-{% endblock %}
-
 {% block main %}
-<div class="container mt-5">
-    <h1 class="text-center">Welcome to PwnServer</h1>
+    <div class="container mt-5">
+        <h1 class="text-center">Welcome to PwnServer</h1>
 
-    <h2 class="mt-4">{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
+        <h2 class="mt-4">{% if edit_mode %}Edit{% else %}Upload a New{% endif %} Payload</h2>
 
-    <!-- Eingabeform für Ducky Script Payload -->
-    <form action="{% if edit_mode %}{{ url_for('badUSB.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('badUSB.upload_payload') }}{% endif %}"
-          method="post" id="payload-form" class="mb-4">
-        <div class="form-group">
-            <input type="text" name="name" class="form-control" value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}" placeholder="Payload Name" required>
-        </div>
-        <div class="form-group">
-            <textarea name="payload" rows="10" class="form-control" placeholder="Enter Ducky Script Payload">{% if edit_mode %}{{ edit_payload }}{% else %}{% endif %}</textarea>
-        </div>
-        <div class="form-group">
-            <label for="keyboard_layout">Select Keyboard Layout:</label>
-            <select name="keyboard_layout" id="keyboard_layout" class="form-control">
-                <option value="US">US</option>
-                <option value="DE">DE</option>
-                <!-- Add more options as needed -->
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">{% if edit_mode %}Save Changes{% else %}Save Payload{% endif %}</button>
-        <button type="submit" formaction="/execute_selected" formmethod="post" class="btn btn-success">Execute</button>
-    </form>
+        <!-- Eingabeform für Ducky Script Payload -->
+        <form action="
+                {% if edit_mode %}{{ url_for('badUSB.update_payload', filename=edit_payload_name) }}{% else %}{{ url_for('badUSB.upload_payload') }}{% endif %}"
+              method="post" id="payload-form" class="mb-4">
+            <div class="form-group">
+                <input type="text" name="name" class="form-control"
+                       value="{% if edit_mode %}{{ edit_payload_name }}{% else %}{% endif %}" placeholder="Payload Name"
+                       required>
+            </div>
+            <div class="form-group">
+                <textarea name="payload" rows="10" class="form-control"
+                          placeholder="Enter Ducky Script Payload">{% if edit_mode %}
+                    {{ edit_payload }}{% else %}{% endif %}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="keyboard_layout">Select Keyboard Layout:</label>
+                <select name="keyboard_layout" id="keyboard_layout" class="form-control">
+                    <option value="US">US</option>
+                    <option value="DE">DE</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">{% if edit_mode %}Save Changes{% else %}Save
+                Payload{% endif %}</button>
+            <button type="submit" formaction="/execute_selected" formmethod="post" class="btn btn-success">Execute
+            </button>
+        </form>
 
-    <!-- Suche und Anzeige gespeicherter Payloads -->
-    <h2>Saved Payloads</h2>
-    <input type="text" id="searchInput" onkeyup="searchPayload()" placeholder="Search for payloads..." class="form-control mb-3">
+        <!-- Suche und Anzeige gespeicherter Payloads -->
+        <h2>Saved Payloads</h2>
+        <input type="text" id="searchInput" onkeyup="searchPayload()" placeholder="Search for payloads..."
+               class="form-control mb-3">
 
-    <table class="table table-bordered">
-        <thead class="thead-light">
-        <tr>
-            <th>Payload Name</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody id="payloadTable">
-        {% for payload in payloads %}
+        <table class="table table-bordered">
+            <thead class="thead-light">
             <tr>
-                <td>{{ payload }}</td>
-                <td>
-                    <!-- "Select"-Button anstelle von "Edit" -->
-                    <form action="/edit/{{ payload }}" method="get" style="display:inline;">
-                        <button type="submit" class="btn btn-warning btn-sm">Select</button>
-                    </form>
-                    <form action="/delete/{{ payload }}" method="post" style="display:inline;" onsubmit="return confirmDelete('{{ payload }}')">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </td>
+                <th>Payload Name</th>
+                <th>Action</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody id="payloadTable">
+            {% for payload in payloads %}
+                <tr>
+                    <td>{{ payload }}</td>
+                    <td>
+                        <!-- "Select"-Button anstelle von "Edit" -->
+                        <form action="/edit/{{ payload }}" method="get" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">Select</button>
+                        </form>
+                        <form action="/delete/{{ payload }}" method="post" style="display:inline;"
+                              onsubmit="return confirmDelete('{{ payload }}')">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
