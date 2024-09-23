@@ -101,7 +101,15 @@ sudo apt purge xfce4* lightdm*
 
 
 
+install python venv!!!
+```bash
+sudo apt install python3.12-venv
+# im pwnServer ordner:
+python3 -m venv .venv
 
+# Jedes Mal, wenn du die Anwendung startest, musst du die virtuelle Umgebung aktivieren
+source .venv/bin/activate
+```
 
 
 
