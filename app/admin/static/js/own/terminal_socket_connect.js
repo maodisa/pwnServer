@@ -25,14 +25,6 @@ document.getElementById('command-input').addEventListener('keypress', function (
     }
 });
 
-// Funktion zum Senden von Ctrl+C
-document.addEventListener('keydown', function (event) {
-    if (event.ctrlKey && event.key === 'c') {
-        socket.emit('run_command', {data: 'Ctrl+C'});
-        event.preventDefault(); // Verhindert das Standardverhalten
-    }
-});
-
 // Auf die Terminalausgabe vom Server hören
 socket.on('command_output', function (msg) {
     var terminal = document.getElementById('terminal-output');
