@@ -16,6 +16,6 @@ def create_admin_app():
 
         app.register_blueprint(core, url_prefix='/')
         app.register_blueprint(badUSB, url_prefix='/badUSB')
-        app.register_blueprint(badUSB, url_prefix='/terminal')
+        app.register_blueprint(terminal, url_prefix='/terminal')
 
     return app
