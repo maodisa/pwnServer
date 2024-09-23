@@ -17,8 +17,10 @@
     // Function to send a command
     function sendCommand() {
         var command = document.getElementById('command-input').value;
-        socket.emit('run_command', { data: command });
-        document.getElementById('command-input').value = ''; // Clear the input
+        if (command.trim() !== '') { // Check for empty input
+            socket.emit('run_command', { data: command });
+            document.getElementById('command-input').value = ''; // Clear the input
+        }
     }
 
     // Listen for terminal output from the server

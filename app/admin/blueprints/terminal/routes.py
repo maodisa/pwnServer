@@ -1,8 +1,7 @@
-import socketio
-from flask_socketio import emit
 import subprocess  # To run system commands
-from app.admin import socket_io  # Das umbenannte SocketIO-Objekt importieren
 from flask import render_template, Blueprint
+from app.admin import socket_io  # Das umbenannte SocketIO-Objekt importieren
+from flask_socketio import emit  # Stelle sicher, dass emit korrekt importiert wird
 
 terminal = Blueprint('terminal', __name__, template_folder='templates')
 
@@ -10,9 +9,8 @@ terminal = Blueprint('terminal', __name__, template_folder='templates')
 def index():
     return render_template('terminal/index.html')
 
-
 # Terminal route to run commands
-@socketio.on('run_command')
+@socket_io.on('run_command')
 def handle_command(data):
     command = data['data']
     try:
