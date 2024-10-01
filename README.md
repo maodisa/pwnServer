@@ -8,19 +8,24 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 ---
 
 ## Funktionen
-- Startet ein WLAN-Netzwerk (Hotspot)
-- Webinterface für die Steuerung von Ducky Script Payloads
-- Ausführen und Speichern von Payloads
 - USB-HID Unterstützung (als Tastatur erkannt)
+- Startet ein WLAN-Netzwerk (Hotspot)
+- Erstellen, Ausführen und Speichern von Payloads
+- Webinterface für die Steuerung von Ducky Script Payloads
 
 ---
 
-## Projektstruktur
-- `pwn_server.py`: Hauptserver, der das Webinterface bereitstellt und Payloads injiziert.
-- `config.yaml`: Konfigurationsdatei für SSID, Passwort und WebUI Zugangsdaten.
-- `run_payload.sh`: Bash-Skript zur Ausführung der Ducky Script Payloads.
-- `templates/index.html`: Webinterface für die Steuerung des PwnServers.
-- `payloads/`: Verzeichnis für gespeicherte Ducky Script Payloads.
+[//]: # (## Projektstruktur)
+
+[//]: # (- `pwn_server.py`: Hauptserver, der das Webinterface bereitstellt und Payloads injiziert.)
+
+[//]: # (- `config.yaml`: Konfigurationsdatei für SSID, Passwort und WebUI Zugangsdaten.)
+
+[//]: # (- `run_payload.sh`: Bash-Skript zur Ausführung der Ducky Script Payloads.)
+
+[//]: # (- `templates/index.html`: Webinterface für die Steuerung des PwnServers.)
+
+[//]: # (- `payloads/`: Verzeichnis für gespeicherte Ducky Script Payloads.)
 
 ---
 
@@ -28,30 +33,29 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 1. **Hardware**
    - Raspberry Pi Zero 2 W
    - USB-Verbindung zu einem Rechner, um den Pi als BadUSB zu betreiben
-   - WLAN-Adapter (integriert im Raspberry Pi Zero 2 W)
-   
+   - optional:
+     - pisugar2 battery
 2. **Software**
    - **Kali Linux** vorinstalliert auf dem Pi (aktuellste Version)
    - **Python 3** und **pip**
-   - **Flask** Webframework
-   - **nmcli** für WLAN-Netzwerkmanagement
+---
 
-3. **Ducky Script Interpreter**
-   - Wir verwenden das Tool **DuckPi**, um Ducky Script Payloads auf dem Pi auszuführen.
+## Start the Server:
+```bash
+cd ~
+sudo su
+pwnServer/start_server.sh
+```
+
 
 ---
 
 
 
 
-
-
-
-
-
 ## Nutzung des PwnServer
 
-1. Pi anschließen und Webinterface aufrufen
+1. Pi starten und Webinterface aufrufen
    - Sobald der Pi über USB mit einem Rechner verbunden ist, startet er automatisch und wird als USB-Tastatur erkannt. Gleichzeitig wird der WLAN-Hotspot aktiviert.
    - Verbinde dich mit dem WLAN des Pi (SSID und Passwort stehen in config.yaml).
    - Öffne einen Browser und gehe zu http://<Pi-IP-Adresse> (normalerweise http://192.168.4.1).

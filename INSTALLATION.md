@@ -1,5 +1,256 @@
 # Installation steps
-## battery - pisugar2 - OPTIONAL!
+## Setup Micro-SD-Card
+### 1 Click
+![img.png](README_statics/installation/kali_setup/img_0.png)
+### 2 Click
+![img_1.png](README_statics/installation/kali_setup/img_1.png)
+### 3 Click and scroll down
+![img_2.png](README_statics/installation/kali_setup/img_2.png)
+### 4 Click
+![img_3.png](README_statics/installation/kali_setup/img_3.png)
+### 5. Click
+![img_4.png](README_statics/installation/kali_setup/img_4.png)
+### 6. Click
+![img_5.png](README_statics/installation/kali_setup/img_5.png)
+### 7. Click
+![img_6.png](README_statics/installation/kali_setup/img_6.png)
+### 8. Click (BE CAREFULLY)
+![img_7.png](README_statics/installation/kali_setup/img_7.png)
+### 9. Click
+![img_8.png](README_statics/installation/kali_setup/img_8.png)
+### 10. Click
+![img_9.png](README_statics/installation/kali_setup/img_9.png)
+### 11. Click
+![img_10.png](README_statics/installation/kali_setup/img_10.png)
+
+---
+
+## Connect the Pi to the internet
+Login to your pi:
+- Username: kali 
+- Password: kali
+
+### WIFI
+use the HDMI port and GUI to connect the pi to wifi via kali-linux
+
+### LAN
+use the USB-Data Port to connect a LAN-Cable to the pi
+
+---
+
+## Connect to your Pi
+
+### SSH into your pi
+use Windows cmd or powershell to ssh into your pi. Look in your router witch ip your pi has.
+
+```bash
+ssh kali@x.x.x.x
+```
+replace "x.x.x.x" with the IP of your Raspberry pi
+
+---
+
+## Clone Git Repo:
+```bash
+sudo apt-get install -y git
+cd ~
+# clone Repository
+git clone https://github.com/maodisa/pwnServer.git
+cd pwnServer/
+sudo chmod +x start_server.sh
+```
+
+## Run installation.sh
+
+```bash
+sudo chmod +x install.sh
+sudo ./install.sh
+```
+
+After the installations script is done:
+
+1. Run the crontab -e command
+```bash
+crontab -e
+```
+2. Choose "nano" as texteditor (press "1" and hit ENTER)
+3. Add the following line to the ent of the file:
+```text
+@reboot /usr/bin/pwnPal_usb # libcomposite configuration
+```
+4. Save and close the file. Use the following Commands
+```text
+STRG+x
+SHIFT+y
+ENTER
+```
+
+Now job will run at the Linux boot time.
+
+
+---
+
+## Setup Wifi Service - NOT READY
+https://www.cloudzilla.ai/dev-education/setting-up-hotspot-on-kali-linux/#get-started
+
+https://www.youtube.com/watch?v=5sWZ2rHCSsQ&t=284s
+
+### new - hostapd
+```bash
+############################### HOSTAPD ###############################
+sudo apt-get install hostapd
+sudo service hostapd stop
+
+sudo nano /etc/hostapd/hostapd.conf
+```
+```text
+# Set interface
+interface=wlan0
+# Set driver to
+driver=nl80211
+# Set your desired ssid(Wi-Fi name)
+ssid=SecretPiNetwork
+# Set the access point hardware mode to 802.11g
+hw_mode=g
+# Select WIFI channel
+channel=6
+country_code=DE
+# Ensure to enable only WPA2
+auth_algs=1
+wpa=2
+wpa_passphrase=password123
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+ignore_broadcast_ssid=0
+```
+```bash
+sudo nano /etc/default/hostapd
+```
+
+```text
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+```
+
+```bash
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+```
+
+### new - dnsmasq
+```bash
+############################### DNSMASQ ###############################
+sudo su
+#sudo apt update
+sudo apt-get update
+sudo apt-get install dhcpcd5 dnsmasq -y
+
+
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.backup
+sudo nano /etc/dnsmasq.conf
+```
+Add Text:
+```text
+interface=wlan0
+except-interface=eth0
+dhcp-range=192.168.10.50,192.168.10.150,255.255.255.0,24h
+```
+```bash
+sudo nano /etc/dhcpcd.conf
+#interface wlan0
+#static ip_address=192.168.10.1/24
+#nohook wpa_supplicant
+```
+
+### new - dnsmasq & hostapd
+
+```bash
+sudo update-rc.d hostapd enable
+sudo update-rc.d dnsmasq enable
+
+sudo restart
+```
+### Debugging
+```bash
+sudo ip link set wlan0 up
+
+sudo hostapd /etc/hostapd/hostapd.conf
+
+sudo nano /etc/network/interfaces
+# Add:
+#allow-hotplug wlan0
+#iface wlan0 inet static
+#    address 192.168.10.1
+#    netmask 255.255.255.0
+
+sudo ifdown wlan0 && sudo ifup wlan0
+sudo systemctl restart dnsmasq
+sudo systemctl status dnsmasq
+
+```
+
+## OLD
+```bash
+apt-get install hostapd
+apt-get install dnsmaq
+sudo service hostapd stop
+sudo service dnsmasq stop
+sudo update-rc.d hostapd disable
+sudo update-rc.d dnsmasq disable
+
+echo '# Only bind it to one interface
+bind-interfaces
+# Select the interface to use for binding
+interface=wlan0
+# Select a scope of IP addresses to be used in DHCP leasing
+dhcp-range=192.168.1.1,192.168.1.9' | tee -a /etc/dnsmasq.conf
+
+echo '# Set interface
+interface=wlan0
+# Set driver to
+driver=nl80211
+# Set your desired ssid(Wi-Fi name)
+ssid=SecretPiNetwork
+# Set the access point hardware mode to 802.11g
+hw_mode=g
+# Select WIFI channel
+ channel=6
+# Ensure to enable only WPA2
+wpa=2
+wpa_passphrase="password123"
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP' | tee -a /etc/hostapd.conf
+
+sudo systemctl unmask dnsmasq
+sudo systemctl unmask hostapd
+
+sudo systemctl enable dnsmasq
+sudo systemctl enable hostapd
+
+sudo service dnsmasq stop
+sudo service hostapd stop
+
+sudo service dnsmasq start
+sudo service hostapd start
+```
+
+### 1. Search for "Advanced Network Settings"
+![img.png](img.png)
+### 2. Click
+![img_1.png](img_1.png)
+### 3. Click
+![img_2.png](img_2.png)
+### 4. Click
+![img_3.png](img_3.png)
+
+### 5. HIER WEITER MACHEN!!!
+
+
+
+---
+
+## (OPTIONAL) battery - pisugar2
 ```bash
 sudo su
 raspi-config # --> i2f aktivieren
@@ -17,7 +268,7 @@ change the text
 "auto_power_on": true,
 ```
 
-or use the webinterface
+or use the webinterface at "127.0.0.1::8421"
 
 ```bash
 sudo reboot
@@ -44,150 +295,10 @@ sudo systemctl disable pisugar-server
 sudo systemctl enable pisugar-server
 ```
 
-
 ---
 
-## remove xfce to reduce cpu usage: 
-
+## (OPTIONAL) remove xfce (remove desktop env):
+to reduce cpu usage
 ```bash
 sudo apt purge xfce4* lightdm*
 ```
----
-
-
-## 1. Projekt klonen
-
-Zuerst musst du das Projekt auf den Raspberry Pi klonen:
-
-```bash
-git clone https://github.com/maodisa/pwnServer.git
-cd pwnServer
-```
-## 2. Abhängigkeiten installieren
-Installiere die notwendigen Python-Pakete:
-
-```bash
-sudo apt-get update
-sudo apt-get install -y python3 python3-pip git
-pip3 install -r requirements.txt
-```
-
-
-
-### install python venv!!! --> oder alles als root?
-```bash
-sudo apt install python3.12-venv
-# im pwnServer ordner:
-python3 -m venv .venv
-
-# Jedes Mal, wenn du die Anwendung startest, musst du die virtuelle Umgebung aktivieren
-source .venv/bin/activate
-```
-
-### Set-Up autorun for ducky
-```bash
-lsusb
-# $ Bus 001 Device 002: ID <Vendor-ID>:<Product-ID> [Beschreibung]
-sudo nano /etc/udev/rules.d/99-badusb.rules
-# add lines:
-# ANPASSEN AUF ROOT!!!
-## SUBSYSTEM=="usb", ATTR{idVendor}=="<Vendor-ID>", ATTR{idProduct}=="<Product-ID>", RUN+="/usr/bin/python3 /home/kali/pwnServer/app/admin/python/ducky_script/hid_trigger.py"
-
-# change to executable
-sudo chmod +x /home/kali/pwnServer/app/admin/python/ducky_script/hid_trigger.py
-
-#restart the service:
-
-
-# Debugging der Udev-Regeln
-sudo udevadm monitor --environment --udev
-
-# Überprüfen der Systemprotokolle:
-sudo journalctl -f
-```
-
-
-
-
-## Pi as HID-Device (Keyboard)
-https://randomnerdtutorials.com/raspberry-pi-zero-usb-keyboard-hid/
-```bash
-sudo apt update
-sudo apt dist-upgrade
-
-
-echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
-echo "dwc2" | sudo tee -a /etc/modules
-sudo echo "libcomposite" | sudo tee -a /etc/modules
-
-# Creating the config script
-sudo touch /usr/bin/pwnPal_usb
-pi@raspberrypi:~ $ sudo chmod +x /usr/bin/pwnPal_usb # {DeviceName}
-```
-1. Run the crontab -e command
-2. Add the job to the @reboot.
-3. Add the following line to the ent of the file:
-4. @reboot /usr/bin/pwnPal_usb # libcomposite configuration
-5. Save and close the file. 
-
-Now job will run at the Linux boot time.
-```bash
-sudo nano /usr/bin/pwnPal_usb
-```
-Add the following:
-```bash
-#!/bin/bash
-cd /sys/kernel/config/usb_gadget/
-mkdir -p isticktoit
-cd isticktoit
-echo 0x1d6b > idVendor # Linux Foundation
-echo 0x0104 > idProduct # Multifunction Composite Gadget
-echo 0x0100 > bcdDevice # v1.0.0
-echo 0x0200 > bcdUSB # USB2
-mkdir -p strings/0x409
-echo "fedcba0123456789" > strings/0x409/serialnumber
-echo "Pwn Community" > strings/0x409/manufacturer
-echo "Good USB Device" > strings/0x409/product
-mkdir -p configs/c.1/strings/0x409
-echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
-echo 250 > configs/c.1/MaxPower
-
-# Add functions here
-# https://www.isticktoit.net/?p=1383
-# HID!!
-mkdir -p functions/hid.usb0
-echo 1 > functions/hid.usb0/protocol
-echo 1 > functions/hid.usb0/subclass
-echo 8 > functions/hid.usb0/report_length
-echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/hid.usb0/report_desc
-ln -s functions/hid.usb0 configs/c.1/
-
-# MOUSE!!
-mkdir -p functions/hid.mouse
-echo 0 > functions/hid.mouse/protocol
-echo 0 > functions/hid.mouse/subclass
-echo 7 > functions/hid.mouse/report_length
-echo -ne \\x05\\x01\\x09\\x02\\xa1\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x03\\x15\\x00\\x25\\x01\\x95\\x03\\x75\\x01\\x81\\x02\\x95\\x01\\x75\\x05\\x81\\x03\\x05\\x01\\x09\\x30\\x09\\x31\\x15\\x81\\x25\\x7f\\x75\\x08\\x95\\x02\\x81\\x06\\xc0\\xc0 > functions/hid.mouse/report_desc
-ln -s functions/hid.mouse configs/c.1/
-
-# USB!!
-FILE=/piusb.bin
-MNTPOINT=/mnt/usb_share
-mkdir -p ${MNTPOINT}
-# mount -o loop,ro,offset=1048576 -t ext4 $FILE ${FILE/img/d} # FOR OLD WAY OF MAKING THE IMAGE
-mount -o loop,ro, -t vfat $FILE ${MNTPOINT} # FOR IMAGE CREATED WITH DD
-mkdir -p functions/mass_storage.usb0
-echo 1 > functions/mass_storage.usb0/stall
-echo 0 > functions/mass_storage.usb0/lun.0/cdrom
-echo 0 > functions/mass_storage.usb0/lun.0/ro
-echo 0 > functions/mass_storage.usb0/lun.0/nofua
-echo $FILE > functions/mass_storage.usb0/lun.0/file
-ln -s functions/mass_storage.usb0 configs/c.1/
-
-# End functions
-
-ls /sys/class/udc > UDC
-```
-
-
-
