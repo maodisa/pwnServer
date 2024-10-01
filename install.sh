@@ -33,7 +33,7 @@ sudo echo "dwc2" | sudo tee -a /etc/modules
 sudo echo "libcomposite" | sudo tee -a /etc/modules
 
 # create File "pwnPal_usb" and write to it
-echo '#!/bin/bash
+sudo echo '#!/bin/bash
 cd /sys/kernel/config/usb_gadget/
 mkdir -p pwnServer
 cd pwnServer
@@ -81,6 +81,6 @@ ln -s functions/mass_storage.usb0 configs/c.1/
 
 # End functions
 
-ls /sys/class/udc > UDC' | tee -a /usr/bin/pwnPal_usb
+ls /sys/class/udc > UDC' | sudo tee -a /usr/bin/pwnPal_usb
 
 sudo chmod +x /usr/bin/pwnPal_usb
