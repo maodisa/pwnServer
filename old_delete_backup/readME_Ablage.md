@@ -421,3 +421,100 @@ ln -s functions/mass_storage.usb0 configs/c.1/
 
 ls /sys/class/udc > UDC
 ```
+
+
+
+
+
+## OLD
+```bash
+apt-get install hostapd
+apt-get install dnsmaq
+sudo service hostapd stop
+sudo service dnsmasq stop
+sudo update-rc.d hostapd disable
+sudo update-rc.d dnsmasq disable
+
+echo '# Only bind it to one interface
+bind-interfaces
+# Select the interface to use for binding
+interface=wlan0
+# Select a scope of IP addresses to be used in DHCP leasing
+dhcp-range=192.168.1.1,192.168.1.9' | tee -a /etc/dnsmasq.conf
+
+echo '# Set interface
+interface=wlan0
+# Set driver to
+driver=nl80211
+# Set your desired ssid(Wi-Fi name)
+ssid=SecretPiNetwork
+# Set the access point hardware mode to 802.11g
+hw_mode=g
+# Select WIFI channel
+ channel=6
+# Ensure to enable only WPA2
+wpa=2
+wpa_passphrase="password123"
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP' | tee -a /etc/hostapd.conf
+
+sudo systemctl unmask dnsmasq
+sudo systemctl unmask hostapd
+
+sudo systemctl enable dnsmasq
+sudo systemctl enable hostapd
+
+sudo service dnsmasq stop
+sudo service hostapd stop
+
+sudo service dnsmasq start
+sudo service hostapd start
+```
+
+### 1. Search for "Advanced Network Settings"
+![img.png](img.png)
+### 2. Click
+![img_1.png](img_1.png)
+### 3. Click
+![img_2.png](img_2.png)
+### 4. Click
+![img_3.png](img_3.png)
+
+### 5. HIER WEITER MACHEN!!!
+
+
+
+
+
+
+### Debugging
+Wenn die Schnittstelle "DOWN" ist, kannst du sie mit dem folgenden Befehl aktivieren:
+```bash
+sudo ip link set wlan0 up
+```
+```bash
+sudo ifdown wlan0 && sudo ifup wlan0
+sudo systemctl restart dnsmasq
+sudo systemctl status dnsmasq
+ip addr show wlan0
+```
+```bash
+sudo ip link set wlan0 up
+
+sudo hostapd /etc/hostapd/hostapd.conf
+
+sudo nano /etc/network/interfaces
+# Add:
+#allow-hotplug wlan0
+#iface wlan0 inet static
+#    address 192.168.10.1
+#    netmask 255.255.255.0
+
+sudo ifdown wlan0 && sudo ifup wlan0
+sudo systemctl restart dnsmasq
+sudo systemctl status dnsmasq
+```
+
+
+

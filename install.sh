@@ -1,6 +1,6 @@
 #!/bin/bash
 # update the pi
-sudo apt-get update
+#sudo apt-get update
 #sudo apt dist-upgrade -y
 
 # install needed packages
