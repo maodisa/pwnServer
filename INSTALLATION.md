@@ -1,27 +1,38 @@
 # Installation steps
 ## Setup Micro-SD-Card
 ### 1 Click
-![img.png](README_statics/installation/kali_setup/img_0.png)
+<img src="README_statics/installation/kali_setup/img_0.png" alt="drawing" style="width:500px;"/>
+
 ### 2 Click
-![img_1.png](README_statics/installation/kali_setup/img_1.png)
+<img src="README_statics/installation/kali_setup/img_1.png" alt="drawing" style="width:500px;"/>
+
 ### 3 Click and scroll down
-![img_2.png](README_statics/installation/kali_setup/img_2.png)
+<img src="README_statics/installation/kali_setup/img_2.png" alt="drawing" style="width:500px;"/>
+
 ### 4 Click
-![img_3.png](README_statics/installation/kali_setup/img_3.png)
+<img src="README_statics/installation/kali_setup/img_3.png" alt="drawing" style="width:500px;"/>
+
 ### 5. Click
-![img_4.png](README_statics/installation/kali_setup/img_4.png)
+<img src="README_statics/installation/kali_setup/img_4.png" alt="drawing" style="width:500px;"/>
+
 ### 6. Click
-![img_5.png](README_statics/installation/kali_setup/img_5.png)
+<img src="README_statics/installation/kali_setup/img_5.png" alt="drawing" style="width:500px;"/>
+
 ### 7. Click
-![img_6.png](README_statics/installation/kali_setup/img_6.png)
+<img src="README_statics/installation/kali_setup/img_6.png" alt="drawing" style="width:500px;"/>
+
 ### 8. Click (BE CAREFULLY)
-![img_7.png](README_statics/installation/kali_setup/img_7.png)
+<img src="README_statics/installation/kali_setup/img_7.png" alt="drawing" style="width:500px;"/>
+
 ### 9. Click
-![img_8.png](README_statics/installation/kali_setup/img_8.png)
+<img src="README_statics/installation/kali_setup/img_8.png" alt="drawing" style="width:500px;"/>
+
 ### 10. Click
-![img_9.png](README_statics/installation/kali_setup/img_9.png)
+<img src="README_statics/installation/kali_setup/img_9.png" alt="drawing" style="width:500px;"/>
+
 ### 11. Click
-![img_10.png](README_statics/installation/kali_setup/img_10.png)
+<img src="README_statics/installation/kali_setup/img_10.png" alt="drawing" style="width:500px;"/>
+
 
 ---
 
@@ -46,12 +57,19 @@ use Windows cmd or powershell to ssh into your pi. Look in your router witch ip 
 ```bash
 ssh kali@x.x.x.x
 ```
-replace "x.x.x.x" with the IP of your Raspberry pi
+replace "x.x.x.x" with the IP of the Raspberry pi in your Network
 
 ---
 
 ## Clone Git Repo:
 ```bash
+sudo apt update
+sudo apt-get update
+sudo apt upgrade
+sudo apt-get upgrade
+
+sudo apt --fix-broken install
+
 sudo apt-get install -y git
 cd ~
 # clone Repository
@@ -98,7 +116,7 @@ https://www.youtube.com/watch?v=5sWZ2rHCSsQ&t=284s
 ### new - hostapd
 ```bash
 ############################### HOSTAPD ###############################
-sudo apt-get install hostapd
+sudo apt-get install -y hostapd
 sudo service hostapd stop
 
 sudo nano /etc/hostapd/hostapd.conf
@@ -143,7 +161,7 @@ sudo systemctl enable hostapd
 sudo su
 #sudo apt update
 sudo apt-get update
-sudo apt-get install dhcpcd5 dnsmasq -y
+sudo apt-get install -y dhcpcd5 dnsmasq
 
 
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.backup
@@ -157,9 +175,12 @@ dhcp-range=192.168.10.50,192.168.10.150,255.255.255.0,24h
 ```
 ```bash
 sudo nano /etc/dhcpcd.conf
-#interface wlan0
-#static ip_address=192.168.10.1/24
-#nohook wpa_supplicant
+```
+Add Text:
+```text
+interface wlan0
+static ip_address=192.168.10.1/24
+nohook wpa_supplicant
 ```
 
 ### new - dnsmasq & hostapd
@@ -168,7 +189,10 @@ sudo nano /etc/dhcpcd.conf
 sudo update-rc.d hostapd enable
 sudo update-rc.d dnsmasq enable
 
-sudo restart
+sudo reboot
+
+
+sudo service --status-all
 ```
 ### Debugging
 ```bash
