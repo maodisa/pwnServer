@@ -56,11 +56,11 @@ Login to your pi:
 - Username: kali
 - Password: kali
 
-### WIFI
+[//]: # (### WIFI)
 
-use the HDMI port and GUI to connect the pi to wifi via kali-linux
+[//]: # (use the HDMI port and GUI to connect the pi to wifi via kali-linux)
 
-### LAN
+### use LAN !!!
 
 use the USB-Data Port to connect a LAN-Cable to the pi
 
@@ -80,168 +80,14 @@ replace "x.x.x.x" with the IP of the Raspberry pi in your Network
 
 ---
 
-## Clone Git Repo:
+## Setup AccessPoint Service
 
-```bash
-sudo apt update
-sudo apt-get update
-#sudo apt upgrade
-#sudo apt-get upgrade
-
-#sudo apt --fix-broken install
-
-sudo apt-get install -y git
-cd ~
-# clone Repository
-git clone https://github.com/maodisa/pwnServer.git
-cd pwnServer/
-
-##### OPTIONAL FOR DEVELOPMENT!!!!
-git checkout terminal
-#####
-
-sudo chmod +x start_server.sh
-```
-
-## Run installation.sh
-
-[//]: # (```bash)
-
-[//]: # (sudo chmod +x install.sh)
-
-[//]: # (sudo ./install.sh)
-
-[//]: # (```)
-
-install.sh:
-
-```bash
-# update the pi
-#sudo apt-get update
-#sudo apt dist-upgrade -y
-
-# install needed packages
-sudo apt-get install -y python3 python3-pip python3.12-venv
-
-# create .venv dir
-python3 -m venv .venv
-
-# activate venv
-# Jedes Mal, wenn du die Anwendung startest, musst du die virtuelle Umgebung aktivieren
-#sudo su
-source .venv/bin/activate
-
-# install pip requirements
-pip3 install -r requirements.txt
-
-# search for usb-port
-#lsusb
-# $ Bus 001 Device 002: ID <Vendor-ID>:<Product-ID> [Beschreibung]
-
-# create File "99-badusb.rules" and write to it
-echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1d6b", ATTR{idProduct}=="0002", RUN+="/usr/bin/python3 ~/pwnServer/app/admin/python/ducky_script/hid_trigger.py"' | sudo tee -a /etc/udev/rules.d/99-badusb.rules
-
-# change to executable
-# git checkout terminal
-sudo chmod +x /home/kali/pwnServer/app/admin/python/ducky_script/hid_trigger.py
-
-# setup pi config to set pi as usb
-echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
-echo "dwc2" | sudo tee -a /etc/modules
-echo "libcomposite" | sudo tee -a /etc/modules
-
-# create File "pwnPal_usb" and write to it
-echo '#!/bin/bash
-cd /sys/kernel/config/usb_gadget/
-mkdir -p pwnServer
-cd pwnServer
-echo 0x1d6b > idVendor # Linux Foundation
-echo 0x0104 > idProduct # Multifunction Composite Gadget
-echo 0x0100 > bcdDevice # v1.0.0
-echo 0x0200 > bcdUSB # USB2
-mkdir -p strings/0x409
-echo "fedcba0123456789" > strings/0x409/serialnumber
-echo "Pwn Community" > strings/0x409/manufacturer
-echo "Good USB Device" > strings/0x409/product
-mkdir -p configs/c.1/strings/0x409
-echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
-echo 250 > configs/c.1/MaxPower
-
-# Add functions here
-# https://www.isticktoit.net/?p=1383
-# HID!!
-#mkdir -p functions/hid.usb0
-#echo 1 > functions/hid.usb0/protocol
-#echo 1 > functions/hid.usb0/subclass
-#echo 8 > functions/hid.usb0/report_length
-#echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02>ln -s functions/hid.usb0 configs/c.1/
-#
-## MOUSE!!
-#mkdir -p functions/hid.mouse
-#echo 0 > functions/hid.mouse/protocol
-#echo 0 > functions/hid.mouse/subclass
-#echo 7 > functions/hid.mouse/report_length
-#echo -ne \\x05\\x01\\x09\\x02\\xa1\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x03\\x15\\x00\\x25\\x01\\x95\\x03>ln -s functions/hid.mouse configs/c.1/
-#
-## USB!!
-#FILE=/piusb.bin
-#MNTPOINT=/mnt/usb_share
-#mkdir -p ${MNTPOINT}
-## mount -o loop,ro,offset=1048576 -t ext4 $FILE ${FILE/img/d} # FOR OLD WAY OF MAKING THE IMAGE
-#mount -o loop,ro, -t vfat $FILE ${MNTPOINT} # FOR IMAGE CREATED WITH DD
-#mkdir -p functions/mass_storage.usb0
-#echo 1 > functions/mass_storage.usb0/stall
-#echo 0 > functions/mass_storage.usb0/lun.0/cdrom
-#echo 0 > functions/mass_storage.usb0/lun.0/ro
-#echo 0 > functions/mass_storage.usb0/lun.0/nofua
-#echo $FILE > functions/mass_storage.usb0/lun.0/file
-#ln -s functions/mass_storage.usb0 configs/c.1/
-
-# End functions
-
-ls /sys/class/udc > UDC' | sudo tee -a /usr/bin/pwnPal_usb
-
-sudo chmod +x /usr/bin/pwnPal_usb
-```
-
-After the installations script is done:
-
-1. Run the crontab -e command
-
-```bash
-crontab -e
-```
-
-2. Choose "nano" as texteditor (press "1" and hit ENTER)
-3. Add the following line to the ent of the file:
-
-```text
-@reboot /usr/bin/pwnPal_usb # libcomposite configuration
-```
-
-4. Save and close the file. Use the following Commands
-
-```text
-STRG+x
-SHIFT+y
-ENTER
-```
-
-Now job will run at the Linux boot time.
-
-
----
-
-## Setup Wifi Service - NOT READY
-
-https://www.cloudzilla.ai/dev-education/setting-up-hotspot-on-kali-linux/#get-started
-
-https://www.youtube.com/watch?v=5sWZ2rHCSsQ&t=284s
-
-### new - hostapd
+### hostapd
 
 ```bash
 ############################### HOSTAPD ###############################
+sudo apt update
+sudo apt-get update
 sudo apt-get install -y hostapd
 sudo service hostapd stop
 sudo update-rc.d hostapd disable
@@ -256,7 +102,7 @@ interface=wlan0
 # Set driver to
 driver=nl80211
 # Set your desired ssid(Wi-Fi name)
-ssid=MyPiNetwork
+ssid=MyPiNetwork4
 # Set the access point hardware mode to 802.11g
 hw_mode=g
 # Select WIFI channel
@@ -280,7 +126,7 @@ sudo nano /etc/default/hostapd
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 ```
 
-### new - dnsmasq
+### dnsmasq
 
 ```bash
 ############################### DNSMASQ ###############################
@@ -363,6 +209,166 @@ sudo service --status-all
 2. dnsmasq
 
 ---
+
+
+## Setup BadUSB:
+
+```bash
+sudo su
+sudo apt update
+sudo apt-get update
+#sudo apt upgrade
+#sudo apt-get upgrade
+
+#sudo apt --fix-broken install
+
+sudo apt-get install -y git
+cd ~
+# clone Repository
+git clone https://github.com/maodisa/pwnServer.git
+cd pwnServer/
+
+##### OPTIONAL FOR DEVELOPMENT!!!!
+git checkout terminal
+#####
+
+sudo chmod +x start_server.sh
+```
+
+## Run installation.sh
+
+[//]: # (```bash)
+
+[//]: # (sudo chmod +x install.sh)
+
+[//]: # (sudo ./install.sh)
+
+[//]: # (```)
+
+install.sh:
+
+```bash
+# update the pi
+#sudo apt-get update
+#sudo apt dist-upgrade -y
+
+# install needed packages
+sudo apt-get install -y python3 python3-pip python3.12-venv
+
+# create .venv dir
+python3 -m venv .venv
+
+# activate venv
+# Jedes Mal, wenn du die Anwendung startest, musst du die virtuelle Umgebung aktivieren
+#sudo su
+source .venv/bin/activate
+
+# install pip requirements
+pip3 install -r setup/requirements.txt
+
+# search for usb-port
+lsusb
+# $ Bus 001 Device 002: ID <Vendor-ID>:<Product-ID> [Beschreibung]
+
+# create File "99-badusb.rules" and write to it
+echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1d6b", ATTR{idProduct}=="0002", RUN+="/usr/bin/python3 ~/pwnServer/app/admin/python/ducky_script/hid_trigger.py"' | sudo tee -a /etc/udev/rules.d/99-badusb.rules
+
+# change to executable
+# git checkout terminal
+sudo chmod +x /home/kali/pwnServer/app/admin/python/ducky_script/hid_trigger.py
+
+# setup pi config to set pi as usb
+echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt
+echo "dwc2" | sudo tee -a /etc/modules
+echo "libcomposite" | sudo tee -a /etc/modules
+
+sudo su
+
+# create File "pwnPal_usb" and write to it
+echo '#!/bin/bash
+cd /sys/kernel/config/usb_gadget/
+mkdir -p pwnServer
+cd pwnServer
+echo 0x1d6b > idVendor # Linux Foundation
+echo 0x0104 > idProduct # Multifunction Composite Gadget
+echo 0x0100 > bcdDevice # v1.0.0
+echo 0x0200 > bcdUSB # USB2
+mkdir -p strings/0x409
+echo "fedcba0123456789" > strings/0x409/serialnumber
+echo "Pwn Community" > strings/0x409/manufacturer
+echo "Good USB Device" > strings/0x409/product
+mkdir -p configs/c.1/strings/0x409
+echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
+echo 250 > configs/c.1/MaxPower
+
+# Add functions here
+# https://www.isticktoit.net/?p=1383
+# HID!!
+#mkdir -p functions/hid.usb0
+#echo 1 > functions/hid.usb0/protocol
+#echo 1 > functions/hid.usb0/subclass
+#echo 8 > functions/hid.usb0/report_length
+#echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02 > ln -s functions/hid.usb0 configs/c.1/
+#
+## MOUSE!!
+#mkdir -p functions/hid.mouse
+#echo 0 > functions/hid.mouse/protocol
+#echo 0 > functions/hid.mouse/subclass
+#echo 7 > functions/hid.mouse/report_length
+#echo -ne \\x05\\x01\\x09\\x02\\xa1\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x03\\x15\\x00\\x25\\x01\\x95\\x03>ln -s functions/hid.mouse configs/c.1/
+#
+## USB!!
+#FILE=/piusb.bin
+#MNTPOINT=/mnt/usb_share
+#mkdir -p ${MNTPOINT}
+## mount -o loop,ro,offset=1048576 -t ext4 $FILE ${FILE/img/d} # FOR OLD WAY OF MAKING THE IMAGE
+#mount -o loop,ro, -t vfat $FILE ${MNTPOINT} # FOR IMAGE CREATED WITH DD
+#mkdir -p functions/mass_storage.usb0
+#echo 1 > functions/mass_storage.usb0/stall
+#echo 0 > functions/mass_storage.usb0/lun.0/cdrom
+#echo 0 > functions/mass_storage.usb0/lun.0/ro
+#echo 0 > functions/mass_storage.usb0/lun.0/nofua
+#echo $FILE > functions/mass_storage.usb0/lun.0/file
+#ln -s functions/mass_storage.usb0 configs/c.1/
+
+# End functions
+
+ls /sys/class/udc > UDC' | sudo tee -a /usr/bin/pwnPal_usb
+
+sudo chmod +x /usr/bin/pwnPal_usb
+```
+
+After the installations script is done:
+
+1. Run the crontab -e command
+
+```bash
+crontab -e
+```
+
+2. Choose "nano" as texteditor (press "1" and hit ENTER)
+3. Add the following line to the ent of the file:
+
+```text
+@reboot /usr/bin/pwnPal_usb # libcomposite configuration
+```
+
+4. Save and close the file. Use the following Commands
+
+```text
+STRG+x
+SHIFT+y
+ENTER
+```
+```bash
+sudo reboot
+```
+
+Now job will run at the Linux boot time.
+
+---
+
+
 
 ## (OPTIONAL) battery - pisugar2
 
