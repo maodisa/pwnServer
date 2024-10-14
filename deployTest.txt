@@ -1,0 +1,69 @@
+# test
+
+
+## Installation
+
+1. Clone this repository to your local system:
+
+   ```bash
+   # ssh
+   git clone 
+   
+   # cd into project
+   cd pythonplot
+
+   ```
+
+2. Change the `start_server.sh` file to an executable:
+
+   ```bash
+   chmod +x start_server.sh
+   ```
+
+3. Update your system and install the necessary packages:
+
+    ```bash
+    sudo apt-get update && sudo apt update
+    sudo apt-get install -y python3 python3-pip
+    sudo apt install -y python3-venv
+    ```
+
+5. Create a `.venv` virtual environment, activate it, and install the Python dependencies:
+
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    pip install -r requirements.txt
+    ```
+
+6. Setup Production Environment
+
+   ```bash
+   sudo nano /etc/pythonplot_config.json
+   ```
+   
+   Change the Value of `SOME VALUE` to a strong Key
+
+   ```json
+   {
+        "SECRET_KEY": "SOME VALUE"
+   }
+   ```
+
+   ```bash
+   pip install build
+   python -m build --wheel
+   ```
+
+## Usage
+
+```bash
+cd pythonplot
+waitress-serve --call 'app.plotGen:create_plotGen_app' --host=127.0.0.1 --port=6543
+```
+
+## Support
+
+If any Problems occur, please contact it@brooklynmaxx.com
+
+https://flask.palletsprojects.com/en/2.3.x/tutorial/deploy/
