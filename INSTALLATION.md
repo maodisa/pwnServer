@@ -82,27 +82,62 @@ replace "x.x.x.x" with the IP of the Raspberry pi in your Network
 
 ## Setup AccessPoint Service
 
+### new interface wlan_ap
+
+```bash
+echo '#!/bin/bash
+
+# Erstelle das wlan_ap Interface
+sudo iw dev wlan0 interface add wlan_ap type __ap
+
+
+sudo ip link set wlan_ap up
+sudo ifdown wlan_ap && sudo ifup wlan_ap
+sudo ip link set wlan0 up
+sudo ifdown wlan0 && sudo ifup wlan0
+
+
+# Starte hostapd
+sudo systemctl restart hostapd' | sudo tee /usr/local/bin/create_wlan_ap.sh
+
+sudo chmod +x /usr/local/bin/create_wlan_ap.sh
+
+echo '[Unit]
+Description=Create wlan_ap interface and start hostapd
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/create_wlan_ap.sh
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target' | sudo tee /etc/systemd/system/wlan_ap.service
+
+sudo systemctl enable wlan_ap.service
+```
+
+
 ### hostapd
 
 ```bash
 ############################### HOSTAPD ###############################
-sudo apt update
-sudo apt-get update
+sudo apt update && sudo apt-get update
+
+sudo iw dev wlan0 interface add wlan_ap type __ap
+ip addr show
+
+
 sudo apt-get install -y hostapd
 sudo service hostapd stop
 sudo update-rc.d hostapd disable
 
-
-sudo nano /etc/hostapd/hostapd.conf
-```
-
-```text
-# Set interface
-interface=wlan0
+echo '# Set interface
+interface=wlan_ap
 # Set driver to
 driver=nl80211
 # Set your desired ssid(Wi-Fi name)
-ssid=MyPiNetwork4
+ssid=PwnC2Server_uni_project__no_harm
 # Set the access point hardware mode to 802.11g
 hw_mode=g
 # Select WIFI channel
@@ -111,19 +146,16 @@ country_code=DE
 # Ensure to enable only WPA2
 auth_algs=1
 wpa=2
+# Set Password
 wpa_passphrase=Start12345
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 ignore_broadcast_ssid=0
-```
+wmm_enabled=0
+wpa_group_rekey=1800' | sudo tee /etc/hostapd/hostapd.conf
 
-```bash
-sudo nano /etc/default/hostapd
-```
-
-```text
-DAEMON_CONF="/etc/hostapd/hostapd.conf"
+echo 'DAEMON_CONF="/etc/hostapd/hostapd.conf"' | sudo tee /etc/default/hostapd
 ```
 
 ### dnsmasq
@@ -132,72 +164,53 @@ DAEMON_CONF="/etc/hostapd/hostapd.conf"
 ############################### DNSMASQ ###############################
 sudo su
 #sudo apt update
-sudo apt-get update
-sudo apt-get install -y dhcpcd5 dnsmasq
-sudo service dnsmasq stop
-sudo update-rc.d dnsmasq disable
+#sudo apt-get update
+apt-get install -y dhcpcd5 dnsmasq
+service dnsmasq stop
+update-rc.d dnsmasq disable
 
 
-sudo mv /etc/dnsmasq.conf /etc/dnsmasq.backup
-sudo nano /etc/dnsmasq.conf
-```
+mv /etc/dnsmasq.conf /etc/dnsmasq.backup
 
-Add Text:
-
-```text
-interface=wlan0
+echo 'interface=wlan_ap
 except-interface=eth0
-dhcp-range=192.168.10.50,192.168.10.150,255.255.255.0,24h
-```
+dhcp-range=192.168.10.50,192.168.10.150,255.255.255.0,24h' | tee /etc/dnsmasq.conf
 
-```bash
-sudo nano /etc/dhcpcd.conf
-```
-
-Add Text:
-
-```text
-interface wlan0
+echo 'interface wlan_ap
 static ip_address=192.168.10.1/24
-nohook wpa_supplicant
-```
+nohook wpa_supplicant' | tee /etc/dhcpcd.conf
 
-```bash
-sudo nano /etc/network/interfaces
-```
-
-Add Text:
-
-```text
-allow-hotplug wlan0
-iface wlan0 inet static
+echo 'allow-hotplug wlan_ap
+iface wlan_ap inet static
     address 192.168.10.1
-    netmask 255.255.255.0
+    netmask 255.255.255.0' | tee /etc/network/interfaces
 ```
 
+### Put all together
+
 ```bash
+sudo ip link set wlan_ap up
+sudo ifdown wlan_ap && sudo ifup wlan_ap
 sudo ip link set wlan0 up
 sudo ifdown wlan0 && sudo ifup wlan0
-sudo ip link set wlan0 up
 ```
 
 ```bash
 sudo systemctl unmask hostapd
+sudo systemctl unmask dnsmasq # kann glaube ich raus
 sudo systemctl enable hostapd
+sudo systemctl enable dnsmasq
 sudo update-rc.d hostapd enable
 sudo update-rc.d dnsmasq enable
+
+#sudo raspi-config nonint do_expand_rootfs
+sudo raspi-config nonint do_wifi_country DE
+sudo raspi-config nonint do_change_timezone Europe/Berlin
+#sudo raspi-config nonint do_hostname pwnServer
+
+sudo reboot
 ```
 
-Set the WIFI-Country right
-
-```bash
-sudo raspi-config
-```
-
-1. "04 Localisation Options"
-2. "I4 Change Wi-fi Country"
-3. Set to "DE" - Germany
-4. Reboot the pi if asked - if not, rebot the pi manually
 
 After Reboot - Check if Services are running
 
@@ -215,8 +228,7 @@ sudo service --status-all
 
 ```bash
 sudo su
-sudo apt update
-sudo apt-get update
+sudo apt update && apt-get update
 #sudo apt upgrade
 #sudo apt-get upgrade
 
@@ -373,10 +385,11 @@ Now job will run at the Linux boot time.
 ## (OPTIONAL) battery - pisugar2
 
 ```bash
-sudo su
-raspi-config # --> i2f aktivieren
+#sudo raspi-config # --> i2f aktivieren
 
-exit
+sudo raspi-config nonint do_i2c 0
+
+
 
 wget https://cdn.pisugar.com/release/pisugar-power-manager.sh
 bash pisugar-power-manager.sh -c release
@@ -386,7 +399,38 @@ nano /etc/pisugar-server/config.json
 change the text
 
 ```text
-"auto_power_on": true,
+{
+  "auth_user": "admin",
+  "auth_password": "admin",
+  "session_timeout": 3600,
+  "i2c_bus": 1,
+  "i2c_addr": null,
+  "auto_wake_time": null,
+  "auto_wake_repeat": 0,
+  "single_tap_enable": true,
+  "single_tap_shell": "sudo systemctl start pisugar-server",
+  "double_tap_enable": true,
+  "double_tap_shell": "sudo restart",
+  "long_tap_enable": true,
+  "long_tap_shell": "sudo shutdown now",
+  "auto_shutdown_level": 3.0,
+  "auto_shutdown_delay": null,
+  "auto_charging_range": [
+    80.0,
+    100.0
+  ],
+  "full_charge_duration": null,
+  "auto_power_on": true,
+  "soft_poweroff": null,
+  "soft_poweroff_shell": null,
+  "auto_rtc_sync": null,
+  "adj_comm": null,
+  "adj_diff": null,
+  "rtc_adj_ppm": null,
+  "anti_mistouch": null,
+  "bat_protect": null,
+  "battery_curve": null
+}
 ```
 
 or use the webinterface at "127.0.0.1::8421"
@@ -425,4 +469,13 @@ to reduce cpu usage
 
 ```bash
 sudo apt purge xfce4* lightdm*
+```
+
+
+```bash
+sudo apt --fix-broken install
+
+sudo apt upgrade
+sudo apt-get upgrade
+
 ```
