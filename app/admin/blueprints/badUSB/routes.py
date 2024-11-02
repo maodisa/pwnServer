@@ -96,3 +96,13 @@ def execute_selected_payload():
         flash(f'Error executing payload: {str(e)}', 'danger')
 
     return redirect(url_for('badUSB.index'))
+
+# Route zum Löschen eines Payloads
+@badUSB.route('/delete/<filename>', methods=['POST'])
+def delete_payload(filename):
+    file_path = os.path.join(payload_dir, filename)
+
+    if os.path.exists(file_path):
+        os.remove(file_path)  # Löscht die Datei
+
+    return redirect('/')
