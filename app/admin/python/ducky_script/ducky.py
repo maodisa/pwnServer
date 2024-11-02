@@ -1,27 +1,43 @@
-# ducky.py
+import pyautogui
 import time
-import os
 
 
-# Placeholder functions for hardware-level keypresses
+# Funktion zur Ausgabe eines Tasteneingabeberichts (nur für spezielle Hardware)
 def write_report(report):
-    pass  # Implement actual report writing for USB HID if needed
+    # Diese Funktion wäre für USB HID spezifisch und hängt von der Hardware ab
+    print("Report geschrieben:", report)  # Debugging-Ausgabe (für echte HID erforderlich)
 
 
+# Funktion zur Freigabe aller Tasten (für HID-Geräte erforderlich)
 def release_keys():
-    pass  # Implement release of all keys if needed
+    # In pyautogui können wir keine "alle Tasten loslassen" Methode direkt aufrufen
+    # Für HID wäre dies ein "alle Tasten freigeben" Signal
+    pyautogui.keyUp('ctrl')  # Beispielhaftes Loslassen einer Modifikatortaste
+    pyautogui.keyUp('alt')
+    pyautogui.keyUp('shift')
+    print("Alle Tasten freigegeben")  # Debugging-Ausgabe
 
 
+# Funktion zum Drücken einer einzelnen Taste
 def press_key(key_code):
-    pass  # Implement key press based on key code
+    # Drückt die Taste basierend auf dem angegebenen Schlüsselcode
+    pyautogui.press(key_code)
+    print(f"Taste '{key_code}' gedrückt")  # Debugging-Ausgabe
 
 
+# Funktion zum Drücken einer Tasten-Kombination (z.B. STRG + ALT + ENTF)
 def press_combination(modifiers, key_code, layout='US'):
-    pass  # Implement key combination press with modifiers
+    # Drückt eine Kombination von Modifikatortasten und einer Haupttaste
+    with pyautogui.hold(modifiers):
+        pyautogui.press(key_code)
+    print(f"Kombination '{modifiers} + {key_code}' gedrückt")  # Debugging-Ausgabe
 
 
+# Funktion zum Eingeben eines einzelnen Zeichens, angepasst an Tastaturlayout
 def write_character(char, layout_name='US'):
-    pass  # Implement character typing for different layouts if needed
+    # Nutzt pyautogui zum Tippen eines Zeichens
+    pyautogui.typewrite(char)
+    print(f"Zeichen '{char}' mit Layout '{layout_name}' geschrieben")  # Debugging-Ausgabe
 
 
 # Dictionary for DuckyScript to pyautogui key mappings

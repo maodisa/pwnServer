@@ -2,6 +2,7 @@
 import os
 from flask import render_template, Blueprint, request, redirect, url_for, flash
 from app.admin.python.ducky_script.ducky import execute_payload
+from datetime import datetime
 
 badUSB = Blueprint('badUSB', __name__, template_folder='templates')
 
@@ -85,7 +86,10 @@ def update_payload(filename):
 @badUSB.route('/execute_selected', methods=['POST'])
 def execute_selected_payload():
     payload_content = request.form['payload']
-    temp_payload_path = os.path.join(payload_dir, "temp_execution_payload.txt")
+
+    # Generiere den Dateinamen mit Timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # Format: YYYYMMDD_HHMMSS
+    temp_payload_path = os.path.join(payload_dir, f"executed_payload_{timestamp}.txt")
 
     try:
         with open(temp_payload_path, "w") as temp_file:
@@ -105,4 +109,4 @@ def delete_payload(filename):
     if os.path.exists(file_path):
         os.remove(file_path)  # Löscht die Datei
 
-    return redirect('/')
+    return redirect(url_for('badUSB.index'))
