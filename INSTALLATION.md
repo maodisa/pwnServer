@@ -95,6 +95,12 @@ sudo ip link set wlan_ap up
 sudo ifdown wlan_ap && sudo ifup wlan_ap
 sudo ip link set wlan0 up
 sudo ifdown wlan0 && sudo ifup wlan0
+sudo iw dev wlan0 set power_save off
+sudo iw dev wlan_ap set power_save off
+
+
+sudo systemctl disable dhcpcd
+sudo systemctl stop dhcpcd
 
 
 # Starte hostapd
@@ -146,6 +152,7 @@ country_code=DE
 # Ensure to enable only WPA2
 auth_algs=1
 wpa=2
+
 # Set Password
 wpa_passphrase=Start12345
 wpa_key_mgmt=WPA-PSK
@@ -156,6 +163,9 @@ wmm_enabled=0
 wpa_group_rekey=1800' | sudo tee /etc/hostapd/hostapd.conf
 
 echo 'DAEMON_CONF="/etc/hostapd/hostapd.conf"' | sudo tee /etc/default/hostapd
+
+sudo iw dev wlan_ap set power_save off
+
 ```
 
 ### dnsmasq
@@ -286,7 +296,6 @@ lsusb
 echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="1d6b", ATTR{idProduct}=="0002", RUN+="/usr/bin/python3 ~/pwnServer/app/admin/python/ducky_script/hid_trigger.py"' | sudo tee -a /etc/udev/rules.d/99-badusb.rules
 
 # change to executable
-# git checkout terminal
 sudo chmod +x /home/kali/pwnServer/app/admin/python/ducky_script/hid_trigger.py
 
 # setup pi config to set pi as usb
@@ -306,43 +315,20 @@ echo 0x0104 > idProduct # Multifunction Composite Gadget
 echo 0x0100 > bcdDevice # v1.0.0
 echo 0x0200 > bcdUSB # USB2
 mkdir -p strings/0x409
-echo "fedcba0123456789" > strings/0x409/serialnumber
-echo "Pwn Community" > strings/0x409/manufacturer
-echo "Good USB Device" > strings/0x409/product
+echo "fedcba9876543210" > strings/0x409/serialnumber
+echo "Levi Kuhlmann" > strings/0x409/manufacturer
+echo "USB Device" > strings/0x409/product
 mkdir -p configs/c.1/strings/0x409
 echo "Config 1: ECM network" > configs/c.1/strings/0x409/configuration
 echo 250 > configs/c.1/MaxPower
 
 # Add functions here
-# https://www.isticktoit.net/?p=1383
-# HID!!
-#mkdir -p functions/hid.usb0
-#echo 1 > functions/hid.usb0/protocol
-#echo 1 > functions/hid.usb0/subclass
-#echo 8 > functions/hid.usb0/report_length
-#echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02 > ln -s functions/hid.usb0 configs/c.1/
-#
-## MOUSE!!
-#mkdir -p functions/hid.mouse
-#echo 0 > functions/hid.mouse/protocol
-#echo 0 > functions/hid.mouse/subclass
-#echo 7 > functions/hid.mouse/report_length
-#echo -ne \\x05\\x01\\x09\\x02\\xa1\\x01\\x09\\x01\\xa1\\x00\\x05\\x09\\x19\\x01\\x29\\x03\\x15\\x00\\x25\\x01\\x95\\x03>ln -s functions/hid.mouse configs/c.1/
-#
-## USB!!
-#FILE=/piusb.bin
-#MNTPOINT=/mnt/usb_share
-#mkdir -p ${MNTPOINT}
-## mount -o loop,ro,offset=1048576 -t ext4 $FILE ${FILE/img/d} # FOR OLD WAY OF MAKING THE IMAGE
-#mount -o loop,ro, -t vfat $FILE ${MNTPOINT} # FOR IMAGE CREATED WITH DD
-#mkdir -p functions/mass_storage.usb0
-#echo 1 > functions/mass_storage.usb0/stall
-#echo 0 > functions/mass_storage.usb0/lun.0/cdrom
-#echo 0 > functions/mass_storage.usb0/lun.0/ro
-#echo 0 > functions/mass_storage.usb0/lun.0/nofua
-#echo $FILE > functions/mass_storage.usb0/lun.0/file
-#ln -s functions/mass_storage.usb0 configs/c.1/
-
+mkdir -p functions/hid.usb0
+echo 1 > functions/hid.usb0/protocol
+echo 1 > functions/hid.usb0/subclass
+echo 8 > functions/hid.usb0/report_length
+echo -ne \\x05\\x01\\x09\\x06\\xa1\\x01\\x05\\x07\\x19\\xe0\\x29\\xe7\\x15\\x00\\x25\\x01\\x75\\x01\\x95\\x08\\x81\\x02\\x95\\x01\\x75\\x08\\x81\\x03\\x95\\x05\\x75\\x01\\x05\\x08\\x19\\x01\\x29\\x05\\x91\\x02\\x95\\x01\\x75\\x03\\x91\\x03\\x95\\x06\\x75\\x08\\x15\\x00\\x25\\x65\\x05\\x07\\x19\\x00\\x29\\x65\\x81\\x00\\xc0 > functions/hid.usb0/report_desc
+ln -s functions/hid.usb0 configs/c.1/
 # End functions
 
 ls /sys/class/udc > UDC' | sudo tee -a /usr/bin/pwnPal_usb

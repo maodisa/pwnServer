@@ -38,13 +38,28 @@ Mit diesem Projekt kannst du Payloads in Ducky Script hochladen, speichern, such
 2. **Software**
    - **Kali Linux** vorinstalliert auf dem Pi (aktuellste Version)
    - **Python 3** und **pip**
+
 ---
 
 ## Start the Server:
 ```bash
-cd ~
+cd ~/pwnServer/
 sudo su
-pwnServer/start_server.sh
+source .venv/bin/activate
+# ./start_server.sh
+sudo ./start_server.sh
+```
+
+---
+
+## Shutdown the Device:
+```bash
+ssh kali@192.168.178.81
+ssh kali@192.168.178.102
+ssh kali@192.168.10.1
+
+sudo apt --fix-broken install
+sudo shutdown now
 ```
 
 
