@@ -1,9 +1,1 @@
-REM Das ist ein Test
-
-GUI r
-
-STRING notepad
-
-ENTER
-
-STRING Das ist ein Test! :)
+REM Das ist ein TestGUI rSTRING notepadENTERSTRING Das ist ein Test! :)
