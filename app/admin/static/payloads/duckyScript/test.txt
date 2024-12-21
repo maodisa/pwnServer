@@ -1,1 +1,1 @@
-REM Das ist ein TestGUI rSTRING notepadENTERSTRING Das ist ein Test! :)
+REM Das ist ein TestGUI rSTRING notepadENTERSTRING Das ist ein Test! :)STRING a b c d e f g h i j k l n m o p q r s t u v w x y z

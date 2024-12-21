@@ -42,10 +42,9 @@ def execute_duckyscript(file_path):
         elif command.startswith("STRING"):
             text = command[7:]
             for char in text:
-                if char in DUCKY_HID_MAPPING:
-                    modifier, keycode = (0x00, DUCKY_HID_MAPPING[char])
-                    if char.isupper():
-                        modifier |= 0x02
+                if char.lower() in DUCKY_HID_MAPPING:  # Prüfen auf Kleinbuchstaben-Mapping
+                    keycode = DUCKY_HID_MAPPING[char.lower()]
+                    modifier = 0x02 if char.isupper() else 0x00  # SHIFT für Großbuchstaben
                     send_hid_report(modifier, keycode)
                     time.sleep(default_delay)
                 else:
