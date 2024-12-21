@@ -132,7 +132,7 @@ def update_payload(filename):
 # Route zum Ausführen des ausgewählten Payloads
 @badUSB.route('/execute_selected', methods=['POST'])
 def execute_selected_payload():
-    duckyscript_file = os.path.join(payload_dir, "newTest.txt")
+    duckyscript_file = os.path.join(payload_dir, "test.txt")
     try:
         if not os.path.exists(duckyscript_file):
             raise FileNotFoundError(f"Die Datei {duckyscript_file} existiert nicht.")
