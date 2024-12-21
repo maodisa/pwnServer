@@ -83,3 +83,20 @@ def test_gui_key():
     except Exception as e:
         print(f"Error during GUI key test: {e}")
 
+def test_all_keys():
+    """Test all possible hex codes for keyboard keys and print the corresponding action."""
+    print("Starting test for all possible keyboard hex codes...")
+    # Erstelle eine Liste mit allen möglichen Hex-Codes (0x00 bis 0xFF)
+    for hex_code in range(0x00, 0xFF + 1):  # 0x00 bis 0xFF
+        try:
+            print(f"Testing hex code: 0x{hex_code:02X}")
+            # Sende den Hex-Code ohne Modifier
+            send_hid_report(0x00, hex_code)  # Keine Modifier-Taste (z. B. SHIFT, CTRL)
+            time.sleep(0.1)  # Kurze Pause, damit der Effekt sichtbar ist
+            # Release all keys
+            send_hid_report(0x00, 0x00)
+            time.sleep(0.1)
+        except Exception as e:
+            print(f"Error while testing hex code 0x{hex_code:02X}: {e}")
+
+    print("Test for all possible keyboard hex codes completed.")
