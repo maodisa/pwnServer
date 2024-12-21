@@ -8,7 +8,7 @@ DUCKY_HID_MAPPING = {
     "q": 0x14, "r": 0x15, "s": 0x16, "t": 0x17, "u": 0x18, "v": 0x19, "w": 0x1A, "x": 0x1B,
     "y": 0x1C, "z": 0x1D, "1": 0x1E, "2": 0x1F, "3": 0x20, "4": 0x21, "5": 0x22, "6": 0x23,
     "7": 0x24, "8": 0x25, "9": 0x26, "0": 0x27, "ENTER": 0x28, "ESC": 0x29, "BACKSPACE": 0x2A,
-    "TAB": 0x2B, "SPACE": 0x2C, "CTRL": 0xE0, "SHIFT": 0xE1, "ALT": 0xE2, "GUI": 0xE3,
+    "TAB": 0x2B, "SPACE": 0x2C, "CTRL": 0xE0, "SHIFT": 0xE1, "ALT": 0xE2, "GUI": 0xE7,
     "LEFT": 0x50, "DOWN": 0x51, "RIGHT": 0x4F, "UP": 0x52, " ": 0x2C
 }
 
@@ -73,7 +73,13 @@ def execute_duckyscript(file_path):
 def test_gui_key():
     """Test the GUI key functionality."""
     print("Testing GUI key...")
-    send_hid_report(DUCKY_HID_MAPPING["GUI"], 0x00)  # Press GUI
-    time.sleep(0.5)
-    send_hid_report(0x00, 0x00)  # Release all keys
-    print("GUI key test completed.")
+    try:
+        # Sende nur die GUI-Taste
+        send_hid_report(DUCKY_HID_MAPPING["GUI"], 0x00)
+        time.sleep(0.5)
+        # Alle Tasten loslassen
+        send_hid_report(0x00, 0x00)
+        print("GUI key test completed.")
+    except Exception as e:
+        print(f"Error during GUI key test: {e}")
+
