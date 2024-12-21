@@ -136,7 +136,7 @@ def execute_selected_payload():
     try:
         if not os.path.exists(duckyscript_file):
             raise FileNotFoundError(f"Die Datei {duckyscript_file} existiert nicht.")
-
+        time.sleep(3)
         execute_duckyscript(duckyscript_file)
         flash("Payload erfolgreich ausgeführt!", "success")
     except Exception as e:
