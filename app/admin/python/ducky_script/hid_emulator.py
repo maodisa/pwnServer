@@ -67,3 +67,13 @@ def execute_duckyscript(file_path):
             time.sleep(default_delay)
         else:
             print(f"Unknown command: {command}")
+
+
+# Test case for GUI key standalone
+def test_gui_key():
+    """Test the GUI key functionality."""
+    print("Testing GUI key...")
+    send_hid_report(DUCKY_HID_MAPPING["GUI"], 0x00)  # Press GUI
+    time.sleep(0.5)
+    send_hid_report(0x00, 0x00)  # Release all keys
+    print("GUI key test completed.")
