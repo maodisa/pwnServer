@@ -14,6 +14,7 @@ DUCKY_HID_MAPPING = {
 
 HID_DEVICE = "/dev/hidg0"
 
+
 def send_hid_report(modifier, keycode):
     """Send a HID report."""
     try:
@@ -24,36 +25,40 @@ def send_hid_report(modifier, keycode):
     except FileNotFoundError:
         print("HID device not found. Ensure the device is configured properly.")
 
+
 def execute_duckyscript(file_path):
-    """Parse and execute a Ducky Script."""
+    """Parse and execute a Ducky Script with cleanup for empty and trimmed lines."""
     default_delay = 0.1
     with open(file_path, 'r', encoding='utf-8') as file:
-        for line in file:
-            command = line.strip()
-            if command.startswith("DEFAULT_DELAY"):
-                default_delay = int(command.split()[1]) / 1000.0
-            elif command.startswith("DELAY"):
-                time.sleep(int(command.split()[1]) / 1000.0)
-            elif command.startswith("STRING"):
-                text = command[7:]
-                for char in text:
-                    if char in DUCKY_HID_MAPPING:
-                        modifier, keycode = (0x00, DUCKY_HID_MAPPING[char])
-                        if char.isupper():
-                            modifier |= 0x02
-                        send_hid_report(modifier, keycode)
-                        time.sleep(default_delay)
-                    else:
-                        print(f"Warning: Unsupported character '{char}'.")
-            elif command.split()[0] in DUCKY_HID_MAPPING:
-                keys = command.split()
-                if len(keys) == 1:
-                    send_hid_report(0x00, DUCKY_HID_MAPPING[keys[0]])
-                elif len(keys) > 1:
-                    modifier = 0x00
-                    for key in keys[:-1]:
-                        modifier |= DUCKY_HID_MAPPING[key]
-                    send_hid_report(modifier, DUCKY_HID_MAPPING[keys[-1]])
-                time.sleep(default_delay)
-            else:
-                print(f"Unknown command: {command}")
+        # Entfernen von Leerzeilen und Trimmen der Zeilen
+        lines = [line.strip() for line in file if line.strip()]
+
+    for line in lines:
+        command = line.strip()
+        if command.startswith("DEFAULT_DELAY"):
+            default_delay = int(command.split()[1]) / 1000.0
+        elif command.startswith("DELAY"):
+            time.sleep(int(command.split()[1]) / 1000.0)
+        elif command.startswith("STRING"):
+            text = command[7:]
+            for char in text:
+                if char in DUCKY_HID_MAPPING:
+                    modifier, keycode = (0x00, DUCKY_HID_MAPPING[char])
+                    if char.isupper():
+                        modifier |= 0x02
+                    send_hid_report(modifier, keycode)
+                    time.sleep(default_delay)
+                else:
+                    print(f"Warning: Unsupported character '{char}'.")
+        elif command.split()[0] in DUCKY_HID_MAPPING:
+            keys = command.split()
+            if len(keys) == 1:
+                send_hid_report(0x00, DUCKY_HID_MAPPING[keys[0]])
+            elif len(keys) > 1:
+                modifier = 0x00
+                for key in keys[:-1]:
+                    modifier |= DUCKY_HID_MAPPING[key]
+                send_hid_report(modifier, DUCKY_HID_MAPPING[keys[-1]])
+            time.sleep(default_delay)
+        else:
+            print(f"Unknown command: {command}")
