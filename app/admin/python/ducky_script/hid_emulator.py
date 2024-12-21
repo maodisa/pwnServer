@@ -115,12 +115,12 @@ def test_all_keys():
     """Test all possible hex codes for keyboard keys and print the corresponding action."""
     print("Starting test for all possible keyboard hex codes...")
     # Erstelle eine Liste mit allen möglichen Hex-Codes (0x00 bis 0xFF)
-    for hex_code in range(0x0E, 0xA0 + 1):  # 0x00 bis 0xFF
+    for hex_code in range(0x36, 0x64 + 1):  # 0x00 bis 0xFF
         try:
             print(f"Testing hex code: 0x{hex_code:02X}")
             # Sende den Hex-Code ohne Modifier
             send_hid_report(0x00, hex_code)  # Keine Modifier-Taste (z. B. SHIFT, CTRL)
-            time.sleep(0.5)  # Kurze Pause, damit der Effekt sichtbar ist
+            time.sleep(1)  # Kurze Pause, damit der Effekt sichtbar ist
             # Release all keys
             send_hid_report(0x00, 0x00)
             time.sleep(0.1)
