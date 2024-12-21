@@ -1,58 +1,5 @@
-REM Testscript für alle unterstützten Befehle
-
-REM DEFAULT_DELAY 1000
-REM Setzt den Standard-Delay auf 1 Sekunde
-
-REM Teste STRING-Befehl mit Leerzeichen und Großbuchstaben
-STRING Hallo Welt!
-ENTER
-
-REM Teste STRING mit Zahlen und Sonderzeichen
-STRING 1234567890!@#
-ENTER
-
-REM Teste DELAY-Befehl
-STRING Nach dieser Zeile gibt es eine Pause.
-ENTER
-DELAY 2000
-
-REM Teste GUI-Befehl
+REM Teste GUI r
 GUI r
 DELAY 1000
-
-REM Teste STRING in Kombination mit GUI
 STRING notepad
-ENTER
-DELAY 1000
-
-REM Schreibe in Notepad
-STRING Dies ist ein automatisierter Test!
-ENTER
-
-REM Teste Großbuchstaben separat
-STRING ABCDEFGHIJKLMNOPQRSTUVWXYZ
-ENTER
-
-REM Teste Kleinbuchstaben separat
-STRING abcdefghijklmnopqrstuvwxyz
-ENTER
-
-REM Teste Pfeiltasten
-STRING Pfeiltasten-Test
-ENTER
-UP
-UP
-DOWN
-LEFT
-RIGHT
-
-REM Teste Sondertasten (z. B. TAB, BACKSPACE)
-STRING Dies ist ein Test mit Sondertasten.
-TAB
-STRING Nach einem Tab
-ENTER
-STRING Jetzt backspace
-BACKSPACE
-BACKSPACE
-STRING Ende.
 ENTER

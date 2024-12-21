@@ -24,6 +24,8 @@ def send_hid_report(modifier, keycode):
             hid.write(bytes(8))  # Key Release
     except FileNotFoundError:
         print("HID device not found. Ensure the device is configured properly.")
+    except Exception as e:
+        print(f"Error while sending HID report: {e}")
 
 
 def execute_duckyscript(file_path):
