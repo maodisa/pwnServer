@@ -92,7 +92,7 @@ def test_all_keys():
             print(f"Testing hex code: 0x{hex_code:02X}")
             # Sende den Hex-Code ohne Modifier
             send_hid_report(0x00, hex_code)  # Keine Modifier-Taste (z. B. SHIFT, CTRL)
-            time.sleep(0.1)  # Kurze Pause, damit der Effekt sichtbar ist
+            time.sleep(0.5)  # Kurze Pause, damit der Effekt sichtbar ist
             # Release all keys
             send_hid_report(0x00, 0x00)
             time.sleep(0.1)
