@@ -9,7 +9,7 @@ DUCKY_HID_MAPPING = {
     "y": 0x1C, "z": 0x1D, "1": 0x1E, "2": 0x1F, "3": 0x20, "4": 0x21, "5": 0x22, "6": 0x23,
     "7": 0x24, "8": 0x25, "9": 0x26, "0": 0x27, "ENTER": 0x28, "ESC": 0x29, "BACKSPACE": 0x2A,
     "TAB": 0x2B, "SPACE": 0x2C, "CTRL": 0xE0, "SHIFT": 0xE1, "ALT": 0xE2, "GUI": 0xE3,
-    "LEFT": 0x50, "DOWN": 0x51, "RIGHT": 0x4F, "UP": 0x52, " ": 0x2C  # SPACE hinzugefügt
+    "LEFT": 0x50, "DOWN": 0x51, "RIGHT": 0x4F, "UP": 0x52, " ": 0x2C
 }
 
 HID_DEVICE = "/dev/hidg0"
@@ -30,7 +30,6 @@ def execute_duckyscript(file_path):
     """Parse and execute a Ducky Script with cleanup for empty and trimmed lines."""
     default_delay = 0.1
     with open(file_path, 'r', encoding='utf-8') as file:
-        # Entfernen von Leerzeilen und Trimmen der Zeilen
         lines = [line.strip() for line in file if line.strip()]
 
     for line in lines:
@@ -42,22 +41,27 @@ def execute_duckyscript(file_path):
         elif command.startswith("STRING"):
             text = command[7:]
             for char in text:
-                if char.lower() in DUCKY_HID_MAPPING:  # Prüfen auf Kleinbuchstaben-Mapping
+                if char.lower() in DUCKY_HID_MAPPING:
                     keycode = DUCKY_HID_MAPPING[char.lower()]
-                    modifier = 0x02 if char.isupper() else 0x00  # SHIFT für Großbuchstaben
+                    modifier = 0x02 if char.isupper() else 0x00
                     send_hid_report(modifier, keycode)
                     time.sleep(default_delay)
                 else:
                     print(f"Warning: Unsupported character '{char}'.")
-        elif command.split()[0] in DUCKY_HID_MAPPING:
+        elif " " in command:
             keys = command.split()
-            if len(keys) == 1:
-                send_hid_report(0x00, DUCKY_HID_MAPPING[keys[0]])
-            elif len(keys) > 1:
-                modifier = 0x00
-                for key in keys[:-1]:
-                    modifier |= DUCKY_HID_MAPPING[key]
-                send_hid_report(modifier, DUCKY_HID_MAPPING[keys[-1]])
+            modifier = 0x00
+            keycode = 0x00
+            for key in keys:
+                if key in DUCKY_HID_MAPPING:
+                    if key in ["CTRL", "SHIFT", "ALT", "GUI"]:
+                        modifier |= DUCKY_HID_MAPPING[key]
+                    else:
+                        keycode = DUCKY_HID_MAPPING[key]
+            send_hid_report(modifier, keycode)
+            time.sleep(default_delay)
+        elif command in DUCKY_HID_MAPPING:
+            send_hid_report(0x00, DUCKY_HID_MAPPING[command])
             time.sleep(default_delay)
         else:
             print(f"Unknown command: {command}")
