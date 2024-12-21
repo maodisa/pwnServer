@@ -22,10 +22,8 @@ DUCKY_HID_MAPPING = {
     "y": 0x1D, "z": 0x1C, "1": 0x1E, "2": 0x1F, "3": 0x20, "4": 0x21, "5": 0x22, "6": 0x23,
     "7": 0x24, "8": 0x25, "9": 0x26, "0": 0x27, "ENTER": 0x28, "ESC": 0x29, "BACKSPACE": 0x2A,
     "TAB": 0x2B, "SPACE": 0x2C, "CAPSLOCK": 0x39, "CTRL": 0xE0, "SHIFT": 0xE1, "ALT": 0xE2,
-    # "GUI": 0xE3,
-    "GUI": 0x5b,
-
-    "RIGHT_GUI": 0xE7,  # GUI Tasten
+    "GUI": 0xE3,  # Standard HID für linke GUI-Taste
+    "RIGHT_GUI": 0xE7,  # Standard HID für rechte GUI-Taste
     "LEFT": 0x50, "DOWN": 0x51, "RIGHT": 0x4F, "UP": 0x52
 }
 
@@ -55,6 +53,14 @@ def send_hid_report(modifier, keycode):
     except Exception as e:
         print(f"Error while sending HID report: {e}")
 
+def send_ctrl_and_esc():
+    """Send a combined signal for CTRL and ESC."""
+    try:
+        send_hid_report(DUCKY_HID_MAPPING["CTRL"], DUCKY_HID_MAPPING["ESC"])  # CTRL + ESC
+        time.sleep(0.1)  # Kurze Verzögerung
+        send_hid_report(0x00, 0x00)  # Release keys
+    except Exception as e:
+        print(f"Error while sending CTRL and ESC: {e}")
 
 def execute_duckyscript(file_path):
     """Parse and execute a Ducky Script with cleanup for empty and trimmed lines."""
@@ -78,6 +84,8 @@ def execute_duckyscript(file_path):
                     time.sleep(default_delay)
                 else:
                     print(f"Warning: Unsupported character '{char}'.")
+        elif command in ["GUI", "RIGHT_GUI"]:  # Hier wird die GUI-Taste abgefangen
+            send_ctrl_and_esc()
         elif " " in command:
             keys = command.split()
             modifier = 0x00
@@ -95,7 +103,6 @@ def execute_duckyscript(file_path):
             time.sleep(default_delay)
         else:
             print(f"Unknown command: {command}")
-
 
 # Test case for GUI key standalone
 def test_gui_key():
