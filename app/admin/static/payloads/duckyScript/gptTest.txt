@@ -1,6 +1,6 @@
 REM Testscript für alle unterstützten Befehle
 
-DEFAULT_DELAY 1000
+REM DEFAULT_DELAY 1000
 REM Setzt den Standard-Delay auf 1 Sekunde
 
 REM Teste STRING-Befehl mit Leerzeichen und Großbuchstaben
