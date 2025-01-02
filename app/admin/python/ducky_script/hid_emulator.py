@@ -82,11 +82,15 @@ def execute_duckyscript(file_path):
             text = command[7:]  # Entferne 'STRING ' und erhalte den Text
             for char in text:
                 if char == " ":
-                    # Sende SPACE explizit
                     send_hid_report(0x00, DUCKY_HID_MAPPING["SPACE"])
-                elif char.lower() in DUCKY_HID_MAPPING:
-                    keycode = DUCKY_HID_MAPPING[char.lower()]
-                    modifier = 0x02 if char.isupper() else 0x00
+                elif char in DUCKY_HID_MAPPING:
+                    value = DUCKY_HID_MAPPING[char]
+                    if isinstance(value, tuple):
+                        # Sonderzeichen mit Modifier (z.B. SHIFT)
+                        modifier, keycode = value
+                    else:
+                        # Normale Zeichen
+                        modifier, keycode = 0x00, value
                     send_hid_report(modifier, keycode)
                 else:
                     print(f"Warning: Unsupported character '{char}'.")
@@ -110,6 +114,7 @@ def execute_duckyscript(file_path):
             time.sleep(default_delay)
         else:
             print(f"Unknown command: {command}")
+
 
 
 # # Test case for GUI key standalone
