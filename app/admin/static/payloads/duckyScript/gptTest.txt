@@ -1,0 +1,5 @@
+REM Teste GUI r
+GUI
+DELAY 1000
+STRING notepad
+ENTER

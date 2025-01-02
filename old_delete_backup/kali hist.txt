@@ -1,0 +1,114 @@
+1  ll
+    2  sudo apt update
+    3  sudo apt-get update
+    4  sudo apt dist-upgrade -y
+    5  sudo apt update
+    6  sudo apt upgrade
+    7  sudo apt --fix-broken install
+    8  sudo apt upgrade
+    9  sudo apt-get upgrade
+   10  sudo apt-get install -y git
+   11  git clone https://github.com/maodisa/pwnServer.git
+   12  cd pwnServer/
+   13  sudo chmod +x start_server.sh
+   14  sudo su
+   15  sudo ip link set wlan0 up
+   16  sudo hostapd /etc/hostapd/hostapd.conf
+   17  sudo systemctl restart hostpad
+   18  sudo systemctl restart hostapd
+   19  sudo systemctl restart dnsmasq
+   20  sudo hostapd /etc/hostapd/hostapd.conf
+   21  sudo nano /etc/hostapd/hostapd.conf
+   22  sudo systemctl restart dnsmasq
+   23  sudo systemctl restart hostapd
+   24  sudo hostapd /etc/hostapd/hostapd.conf
+   25  ip a
+   26  sudo ifconfig wlan0 up
+   27  ip a
+   28  sudo ifconfig wlan0 down
+   29  sudo ifconfig wlan0 up
+   30  ip a
+   31  sudo hostapd /etc/hostapd/hostapd.conf
+   32  ip a
+   33  sudo raspi-config
+   34  ip a
+   35  sudo hostapd /etc/hostapd/hostapd.conf
+   36  ip a
+   37  sudo nano /etc/hostapd/hostapd.conf
+   38  sudo raspi-config
+   39  ip a
+   40  sudo hostapd /etc/hostapd/hostapd.conf
+   41  sudo cat /etc/hostapd/hostapd.conf
+   42  ip a
+   43  sudo ip link set wlan0 down
+   44  sudo iw dev wlan0 set type __ap
+   45  sudo ip link set wlan0 up
+   46  sudo hostapd /etc/hostapd/hostapd.conf
+   47  dmesg | grep nl80211
+   48  ip a
+   49  sudo apt-get update
+   50  iw dev wlan0 info
+   51  sudo hostapd /etc/hostapd/hostapd.conf
+   52  ip a
+   53  sudo hostapd /etc/hostapd/hostapd.conf
+   54  ip a
+   55  sudo ip link set wlan0 up
+   56  ip a
+   57  sudo reboot
+   58  ip a
+   59  sudo hostapd /etc/hostapd/hostapd.conf
+   60  sudo nano /etc/hostapd/hostapd.conf
+   61  sudo hostapd /etc/hostapd/hostapd.conf
+   62  sudo hostapd -d /etc/hostapd/hostapd.conf
+   63  ll
+   64  sudo nano /etc/dnsmasq.conf
+   65  sudo nano /etc/dhcpcd.conf
+   66  sudo nano /etc/hostapd/hostapd.conf
+   67  sudo nano /etc/default/hostapd
+   68  sudo systemctl unmask hostapd
+   69  sudo systemctl enable hostapd
+   70  sudo update-rc.d dnsmasq enable
+   71  sudo update-rc.d hostapd enable
+   72  sudo reboot
+   73  sudo service --status-all
+   74  ip a
+   75  sudo service hostapd stop
+   76  sudo hostapd /etc/hostapd/hostapd.conf
+   77  sudo nano /etc/hostapd/hostapd.conf
+   78  sudo raspi-config
+   79  sudo hostapd /etc/hostapd/hostapd.conf
+   80  ip a
+   81  sudo service hostapd stop
+   82  sudo hostapd /etc/hostapd/hostapd.conf
+   83  sudo shutdown
+   84  sudo service hostapd stop
+   85  sudo service dnsmasq stop
+   86  sudo nano /etc/hostapd/hostapd.conf
+   87  sudo nano /etc/default/hostapd
+   88  sudo nano /etc/default/hostap
+   89  sudo nano /etc/dnsmasq.conf
+   90  sudo nano /etc/dhcpcd.conf
+   91  sudo service dnsmasq start
+   92  sudo service hostapd start
+   93  sudo ip link show wlan0
+   94  sudo ip link set wlan0 up
+   95  iw list
+   96  sudo systemctl status dnsmasq
+   97  sudo systemctl status hostapd
+   98  sudo hostapd /etc/hostapd/hostapd.conf
+   99  ip a
+  100  sudo hostapd /etc/hostapd/hostapd.conf
+  101  sudo nano /etc/network/interfaces
+  102  ip a
+  103  sudo ifdown wlan0 && sudo ifup wlan0
+  104  ip addr show wlan0
+  105  ip a
+  106  sudo hostapd /etc/hostapd/hostapd.conf
+  107  sudo nano /etc/hostapd/hostapd.conf
+  108  ip a
+  109  sudo systemctl status hostapd
+  110  sudo ip link set wlan0 up
+  111  ip a
+  112  sudo nano /etc/hostapd/hostapd.conf
+  113  sudo systemctl status hostapd
+  114  sudo systemctl restart hostapd
