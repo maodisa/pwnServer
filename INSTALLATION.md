@@ -196,6 +196,34 @@ iface wlan_ap inet static
     netmask 255.255.255.0' | tee /etc/network/interfaces
 ```
 
+NEW!!!!!!!!!!!!!!!!
+
+```bash
+############################### DNSMASQ ###############################
+sudo su
+#sudo apt update
+#sudo apt-get update
+apt-get install -y dhcpcd5 dnsmasq
+service dnsmasq stop
+update-rc.d dnsmasq disable
+
+
+mv /etc/dnsmasq.conf /etc/dnsmasq.backup
+
+echo 'interface=wlan_ap
+except-interface=eth0
+dhcp-range=10.10.10.50,10.10.10.150,255.255.255.0,24h' | tee /etc/dnsmasq.conf
+
+echo 'interface wlan_ap
+static ip_address=10.10.10.1/24
+nohook wpa_supplicant' | tee /etc/dhcpcd.conf
+
+echo 'allow-hotplug wlan_ap
+iface wlan_ap inet static
+    address 10.10.10.1
+    netmask 255.255.255.0' | tee /etc/network/interfaces
+```
+
 ### Put all together
 
 ```bash
