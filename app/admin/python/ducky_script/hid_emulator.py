@@ -75,16 +75,19 @@ def execute_duckyscript(file_path):
         elif command.startswith("DELAY"):
             time.sleep(int(command.split()[1]) / 1000.0)
         elif command.startswith("STRING"):
-            text = command[7:]
+            text = command[7:]  # Entferne 'STRING ' und erhalte den Text
             for char in text:
-                if char.lower() in DUCKY_HID_MAPPING:
+                if char == " ":
+                    # Sende SPACE explizit
+                    send_hid_report(0x00, DUCKY_HID_MAPPING["SPACE"])
+                elif char.lower() in DUCKY_HID_MAPPING:
                     keycode = DUCKY_HID_MAPPING[char.lower()]
                     modifier = 0x02 if char.isupper() else 0x00
                     send_hid_report(modifier, keycode)
-                    time.sleep(default_delay)
                 else:
                     print(f"Warning: Unsupported character '{char}'.")
-        elif command in ["GUI", "RIGHT_GUI"]:  # Hier wird die GUI-Taste abgefangen
+                time.sleep(default_delay)
+        elif command in ["GUI", "RIGHT_GUI"]:
             send_ctrl_and_esc()
         elif " " in command:
             keys = command.split()
@@ -103,6 +106,7 @@ def execute_duckyscript(file_path):
             time.sleep(default_delay)
         else:
             print(f"Unknown command: {command}")
+
 
 # # Test case for GUI key standalone
 # def test_gui_key():
